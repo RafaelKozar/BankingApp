@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_view"
+    android:layout_width="240dp"
+    android:background="@android:color/white"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_celula"
+    android:orientation="horizontal"
+    android:weightSum="10"
+    android:padding="@dimen/padding_celula">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            tools:text="Recipe card 1" />
+
+        <TextView
+            android:id="@+id/subtitle_number_ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="10 ingredientes" />
+
+        <TextView
+            android:id="@+id/subtitle_number_stepes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="7 passos" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="40"
+            android:id="@+id/passo_um"
+            android:lines="1"
+            tools:text="Passo 1. Pour the filling into the prepared crust and smooth the top. Spread the whipped cream over the filling. Refrigerate the pie for at least 2 hours. Then it's ready to serve!"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:layout_gravity="bottom">
+
+        <ImageView
+            android:id="@+id/imageView"
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/btn_star_big_on" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
