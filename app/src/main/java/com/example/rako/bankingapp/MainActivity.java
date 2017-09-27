@@ -24,11 +24,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_titles);
+
         if (isTablet(this)) {
-            createViewTablet();
+            GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
         } else {
-            createViewPhone();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
         }
+
+        recyclerView.setHasFixedSize(true);
+        adapterRecipes = new AdapterRecipes();
+        mock();
+        adapterRecipes.setTablet(isTablet(this));
+        recyclerView.setAdapter(adapterRecipes);
 
     }
 
@@ -44,16 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createViewTablet() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_titles);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        recyclerView.setLayoutManager(layoutManager);
-        adapterRecipes = new AdapterRecipes();
-        mock();
-        adapterRecipes.setTablet(true);
-        recyclerView.setAdapter(adapterRecipes);
 
     }
 
