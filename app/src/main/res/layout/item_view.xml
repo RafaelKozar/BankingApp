@@ -39,14 +39,6 @@
             android:textSize="16sp"
             tools:text="7 passos" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/passo_um"
-            android:maxLength="40"
-            android:lines="1"
-            tools:text="Passo 1. Pour the filling into the prepared crust and smooth the top. Spread the whipped cream over the filling. Refrigerate the pie for at least 2 hours. Then it's ready to serve!"
-            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout

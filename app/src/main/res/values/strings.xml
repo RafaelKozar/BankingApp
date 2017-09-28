@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BankingApp</string>
+    <string name="mensagem_erro_conexao">Sem conexão com a internet</string>
+    <string name="texto_repetir">Repetir</string>
 </resources>

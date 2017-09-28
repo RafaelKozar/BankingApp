@@ -11,7 +11,8 @@ import android.view.ViewGroup;
  * Created by rako on 27/09/2017.
  */
 
-public class ListRecipeFragment extends Fragment {
+public class
+ListRecipeFragment extends Fragment {
 
     @Nullable
     @Override

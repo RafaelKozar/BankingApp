@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorBackground"
+    android:id="@+id/coordinator"
     android:layout_height="match_parent">
+
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/loading_receitas"
+
+        android:layout_gravity="center"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_margin="@dimen/margin_layout"
@@ -12,4 +20,5 @@
 
     </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
