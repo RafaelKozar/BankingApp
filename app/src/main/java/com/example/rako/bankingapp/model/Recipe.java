@@ -10,11 +10,15 @@ public class Recipe {
     private String name;
     private List<Ingredient> ingredientList;
     private List<Step> stepList;
+    private int numberSteps;
+    private int numberIngredients;
 
     public Recipe(String name, List<Ingredient> ingredients, List<Step> steps) {
         this.name = name;
         this.ingredientList = ingredients;
         this.stepList = steps;
+        this.numberSteps = steps.size();
+        this.numberIngredients = ingredients.size();
     }
 
     public String getName() {
@@ -39,5 +43,21 @@ public class Recipe {
 
     public void setStepList(List<Step> stepList) {
         this.stepList = stepList;
+    }
+
+    public int getNumberSteps() {
+        return numberSteps;
+    }
+
+    public void setNumberSteps(int numberSteps) {
+        this.numberSteps = numberSteps;
+    }
+
+    public int getNumberIngredients() {
+        return numberIngredients;
+    }
+
+    public void setNumberIngredients(int numberIngredients) {
+        this.numberIngredients = numberIngredients;
     }
 }

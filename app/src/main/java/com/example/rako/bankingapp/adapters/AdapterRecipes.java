@@ -22,6 +22,16 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
     private List<Recipe> recipes = new ArrayList<Recipe>();
     private boolean isTablet;
 
+    private ClickRecipe listennerClick;
+
+    public interface ClickRecipe {
+        void onClickRecipe(int position);
+    }
+
+    public AdapterRecipes(ClickRecipe listennerClick) {
+        this.listennerClick = listennerClick;
+    }
+
     @Override
     public AdapterRecipes.AdapterRecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -39,10 +49,10 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
     @Override
     public void onBindViewHolder(AdapterRecipes.AdapterRecipeViewHolder holder, int position) {
         Log.i(TAG, String.valueOf(position));
-        holder.title.setText(recipes.get(position).getTituloReceita());
-        holder.ingredientes.setText("Teste");
-        holder.passos.setText("Teste");
-        holder.passoUm.setText("Teste Teste TesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTesteTeste");
+        holder.title.setText(recipes.get(position).getName());
+        holder.numberIngredients.setText(String.valueOf(recipes.get(position).getNumberIngredients()));
+        holder.numberSteps.setText(String.valueOf(recipes.get(position).getNumberSteps()));
+
     }
 
     public void setRecipes(List<Recipe> recipes){
@@ -61,16 +71,22 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
 
     public class AdapterRecipeViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView ingredientes;
-        TextView passos;
-        TextView passoUm;
+        TextView numberIngredients;
+        TextView numberSteps;
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listennerClick.onClickRecipe(getAdapterPosition());
+            }
+        };
 
         public AdapterRecipeViewHolder(View itemView) {
             super(itemView);
             title =  itemView.findViewById(R.id.title_name);
-            ingredientes = itemView.findViewById(R.id.subtitle_number_ingredients);
-            passos = itemView.findViewById(R.id.subtitle_number_stepes);
-            passoUm = (TextView) itemView.findViewById(R.id.passo_um);
+            numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
+            numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
+            itemView.setOnClickListener(listener);
         }
     }
 

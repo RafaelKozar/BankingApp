@@ -32,7 +32,7 @@ public class FeedRecipes {
                     ingredients.add(
                             new Ingredient(jsonObjectIngredient.getString("ingredient"),
                                     jsonObjectIngredient.getString("measure"),
-                                    jsonObjectIngredient.getString("quantity")
+                                    Integer.parseInt(jsonObjectIngredient.getString("quantity"))
                             ));
                 }
 
