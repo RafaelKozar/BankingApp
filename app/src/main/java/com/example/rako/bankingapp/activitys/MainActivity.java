@@ -1,4 +1,4 @@
-package com.example.rako.bankingapp;
+package com.example.rako.bankingapp.activitys;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+
+import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.model.Recipe;
+import com.example.rako.bankingapp.adapters.AdapterRecipes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,22 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void mock(){
         List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe("amendoin"));
-        recipes.add(new Recipe("morango"));
-        recipes.add(new Recipe("cebola"));
-        recipes.add(new Recipe("amendoin"));
-        recipes.add(new Recipe("canela"));
-        recipes.add(new Recipe("laranja"));
         adapterRecipes.setRecipes(recipes);
-    }
-
-    public void createViewTablet() {
-
-
-    }
-
-    public void createViewPhone(){
-
     }
 
     public static boolean isTablet(Context context) {

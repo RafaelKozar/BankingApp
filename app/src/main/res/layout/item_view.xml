@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_celula"
+    android:background="@android:color/white"
     android:orientation="horizontal"
     android:weightSum="10"
     android:padding="@dimen/padding_celula">

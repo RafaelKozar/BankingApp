@@ -1,4 +1,4 @@
-package com.example.rako.bankingapp;
+package com.example.rako.bankingapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.model.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;

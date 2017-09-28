@@ -1,4 +1,4 @@
-package com.example.rako.bankingapp;
+package com.example.rako.bankingapp.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
