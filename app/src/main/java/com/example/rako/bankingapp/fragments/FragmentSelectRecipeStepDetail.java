@@ -7,16 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.rako.bankingapp.R;
+
 /**
- * Created by rako on 27/09/2017.
+ * Created by rako on 29/09/2017.
  */
 
-public class
-ListRecipeFragment extends Fragment {
-
+public class FragmentSelectRecipeStepDetail extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_select_step_detail_view, container, false);
+        return view;
     }
 }

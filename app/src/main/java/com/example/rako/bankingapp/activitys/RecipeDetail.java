@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.fragments.FragmentRecipeStepDetail;
 import com.example.rako.bankingapp.fragments.ListStepsFragment;
+import com.example.rako.bankingapp.fragments.FragmentSelectRecipeStepDetail;
 import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Step;
 
@@ -31,10 +33,29 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_list_steps, listStepsFragment)
                 .commit();
+
+        if(MainActivity.isTablet(this)){
+            FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_detail_step, fragmentDetailTablet)
+                    .commit();
+        }
     }
 
     @Override
     public void onClickedStep(int position) {
         Toast.makeText(this, "Você clicou no passo "+ String.valueOf(position), Toast.LENGTH_SHORT).show();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (MainActivity.isTablet(this)) {
+            FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_detail_step, fragmentDetailTablet)
+                    .commit();
+        } else {
+            FragmentRecipeStepDetail fragmentDetailPhone = new FragmentRecipeStepDetail();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_list_steps, fragmentDetailPhone)
+                    .commit();
+        }
     }
 }
