@@ -3,6 +3,7 @@ package com.example.rako.bankingapp.activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,10 +17,13 @@ import android.widget.ProgressBar;
 
 import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.connection.NetworkConnection;
+import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.adapters.AdapterRecipes;
+import com.example.rako.bankingapp.model.Step;
 import com.example.rako.bankingapp.services.RecipesService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterRecipes.ClickRecipe,
@@ -29,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
     private AdapterRecipes adapterRecipes;
     private ProgressBar bar;
     private RecyclerView recyclerView;
+    private List<Recipe> recipeList;
+    private List<Ingredient> ingredientList;
+    private List<Step> stepList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +92,16 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
     @Override
     public void onClickRecipe(int position) {
         Intent it = new Intent(this, RecipeDetail.class);
+        it.putParcelableArrayListExtra("steps",
+                (ArrayList<? extends Parcelable>) recipeList.get(position).getStepList());
+        it.putParcelableArrayListExtra("ingredients",
+                (ArrayList<? extends Parcelable>) recipeList.get(position).getIngredientList());
         startActivity(it);
     }
 
     @Override
     public void onProcessFinishRecipes(List<Recipe> recipes) {
+        this.recipeList = recipes;
         adapterRecipes.setRecipes(recipes);
         bar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);

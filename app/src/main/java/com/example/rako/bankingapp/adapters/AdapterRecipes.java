@@ -86,7 +86,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             title =  itemView.findViewById(R.id.title_name);
             numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
-            itemView.setOnClickListener(listener);
+            itemView.setOnClickListener(listener );
         }
     }
 

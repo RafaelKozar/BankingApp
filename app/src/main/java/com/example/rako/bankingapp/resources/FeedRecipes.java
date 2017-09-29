@@ -27,19 +27,19 @@ public class FeedRecipes {
 
                 int tamIngredients = jsonObject.getJSONArray("ingredients").length();
                 JSONArray jsonArrayIngredients = jsonObject.getJSONArray("ingredients");
-                for (int j = 0; tamIngredients < j; j++) {
+                for (int j = 0; j < tamIngredients; j++) {
                     JSONObject jsonObjectIngredient = jsonArrayIngredients.getJSONObject(j);
                     ingredients.add(
                             new Ingredient(jsonObjectIngredient.getString("ingredient"),
                                     jsonObjectIngredient.getString("measure"),
-                                    Integer.parseInt(jsonObjectIngredient.getString("quantity"))
+                                    Float.parseFloat(jsonObjectIngredient.getString("quantity"))
                             ));
                 }
 
                 int tamSteps = jsonObject.getJSONArray("steps").length();
                 JSONArray jsonArraySteps = jsonObject.getJSONArray("steps");
-                for (int j = 0; tamSteps < j; j++) {
-                    JSONObject jsonObjectSteps = jsonArraySteps.getJSONObject(j);
+                for (int k = 0; k < tamSteps; k++) {
+                    JSONObject jsonObjectSteps = jsonArraySteps.getJSONObject(k);
                     steps.add(
                             new Step(jsonObjectSteps.getString("shortDescription"),
                                     jsonObjectSteps.getString("description"),

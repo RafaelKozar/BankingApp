@@ -3,6 +3,7 @@ package com.example.rako.bankingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,12 @@ public class Recipe implements Parcelable{
         name = in.readString();
         numberSteps = in.readInt();
         numberIngredients = in.readInt();
-        in.readTypedList(getIngredientList(), Ingredient.CREATOR);
+
+        this.ingredientList = new ArrayList<Ingredient>();
+        in.readList(this.ingredientList, Ingredient.class.getClassLoader());
+
+        this.stepList = new ArrayList<Step>();
+        in.readList(this.stepList, Step.class.getClassLoader());
 
     }
 

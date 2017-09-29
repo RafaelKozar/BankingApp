@@ -8,11 +8,11 @@ import android.os.Parcelable;
  */
 
 public class Ingredient implements Parcelable{
-    private int quantity;
+    private float quantity;
     private String measure;
     private String ingredient;
 
-    public Ingredient(String ingredient, String measure, int quantity) {
+    public Ingredient(String ingredient, String measure, float quantity) {
         this.ingredient = ingredient;
         this.measure = measure;
         this.quantity = quantity;
@@ -36,11 +36,11 @@ public class Ingredient implements Parcelable{
         }
     };
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
@@ -67,7 +67,7 @@ public class Ingredient implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(quantity);
+        parcel.writeFloat(quantity);
         parcel.writeString(measure);
         parcel.writeString(ingredient);
     }

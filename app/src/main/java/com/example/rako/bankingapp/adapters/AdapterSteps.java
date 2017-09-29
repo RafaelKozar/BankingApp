@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.model.Step;
 
 import java.util.ArrayList;
@@ -20,26 +22,27 @@ public class AdapterSteps extends RecyclerView.Adapter<AdapterSteps.AdapterStepV
     private List<Step> stepList = new ArrayList<>();
 
 
-    private ClickStep listennerClick;
+    private ClickStep listennerClickStep;
 
     public interface ClickStep {
-        void onClickRecipe(int position);
+        void onClickStep(int position);
     }
 
-    public AdapterSteps(ClickStep listennerClick) {
-        this.listennerClick = listennerClick;
+    public AdapterSteps(ClickStep listennerClickStep) {
+        this.listennerClickStep = listennerClickStep;
     }
 
     @Override
     public AdapterStepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view;
-        return null;//new AdapterStepViewHolder(view);
+        View view = inflater.inflate(R.layout.item_step, parent, false);
+        return new AdapterStepViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(AdapterStepViewHolder holder, int position) {
         Log.i(TAG, String.valueOf(position));
+        holder.title.setText(stepList.get(position).getShortDescription());
       }
 
     public void setStepList(List<Step> stpes){
@@ -57,9 +60,19 @@ public class AdapterSteps extends RecyclerView.Adapter<AdapterSteps.AdapterStepV
     }
 
     public class AdapterStepViewHolder extends RecyclerView.ViewHolder {
+        TextView title;
 
-        public AdapterStepViewHolder(View itemView) {
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listennerClickStep.onClickStep(getAdapterPosition());
+            }
+        };
+
+        public AdapterStepViewHolder(View itemView){
             super(itemView);
+            title = itemView.findViewById(R.id.item_step);
+            itemView.setOnClickListener(listener);
         }
     }
 
