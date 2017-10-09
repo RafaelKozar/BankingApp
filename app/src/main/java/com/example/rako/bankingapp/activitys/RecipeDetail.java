@@ -14,14 +14,18 @@ import com.example.rako.bankingapp.model.Step;
 
 import java.util.ArrayList;
 
-public class RecipeDetail extends AppCompatActivity implements ListStepsFragment.interfaceClickStep{
+public class RecipeDetail extends AppCompatActivity implements ListStepsFragment.interfaceClickStep,
+        FragmentRecipeStepDetail.InterfacePhone {
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
+    private int position;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+
 
         ingredients = getIntent().getParcelableArrayListExtra("ingredients");
         steps = getIntent().getParcelableArrayListExtra("steps");
@@ -29,6 +33,8 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         ListStepsFragment listStepsFragment = new ListStepsFragment();
         listStepsFragment.setStepList(steps);
+
+
 
         fragmentManager.beginTransaction()
                 .add(R.id.fragment_list_steps, listStepsFragment)
@@ -45,17 +51,52 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     @Override
     public void onClickedStep(int position) {
         Toast.makeText(this, "Você clicou no passo "+ String.valueOf(position), Toast.LENGTH_SHORT).show();
-        FragmentManager fragmentManager = getSupportFragmentManager();
         if (MainActivity.isTablet(this)) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_detail_step, fragmentDetailTablet)
+                    .replace(R.id.fragment_detail_step, fragmentDetailTablet)
                     .commit();
         } else {
-            FragmentRecipeStepDetail fragmentDetailPhone = new FragmentRecipeStepDetail();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_list_steps, fragmentDetailPhone)
-                    .commit();
+            this.position = position;
+            setFragmentPhone();
+        }
+    }
+
+    public void setFragmentPhone(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentRecipeStepDetail fragmentDetailPhone = new FragmentRecipeStepDetail();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_list_steps, fragmentDetailPhone)
+                .commit();
+
+        fragmentDetailPhone.setDescription(steps.get(position).getDescription());
+        fragmentDetailPhone.setTitulo(steps.get(position).getShortDescription());
+        fragmentDetailPhone.setUrlVideo(steps.get(position).getVideoURL());
+
+    }
+
+
+    @Override
+    public void delegateSwipeRight() {
+        if (position <= steps.size()) {
+            this.position++;
+            setFragmentPhone();
+        } else {
+            Toast.makeText(this, getString(R.string.text_ultimo_passo), Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+    }
+
+    @Override
+    public void delegateSwipeLeft() {
+        if (position > 0) {
+            this.position--;
+            setFragmentPhone();
+        } else {
+            Toast.makeText(this, getString(R.string.text_primeiro_passo), Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 }

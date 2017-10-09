@@ -1,5 +1,6 @@
 package com.example.rako.bankingapp.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,10 +49,9 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
 
     @Override
     public void onBindViewHolder(AdapterRecipes.AdapterRecipeViewHolder holder, int position) {
-        Log.i(TAG, String.valueOf(position));
         holder.title.setText(recipes.get(position).getName());
-        holder.numberIngredients.setText(String.valueOf(recipes.get(position).getNumberIngredients()));
-        holder.numberSteps.setText(String.valueOf(recipes.get(position).getNumberSteps()));
+        holder.numberIngredients.setText(holder.context.getString(R.string.texto_quantidade_ingredientes, String.valueOf(recipes.get(position).getNumberIngredients())));
+        holder.numberSteps.setText(holder.context.getString(R.string.texto_quantidade_pasos, String.valueOf(recipes.get(position).getNumberSteps())));
 
     }
 
@@ -73,6 +73,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         TextView title;
         TextView numberIngredients;
         TextView numberSteps;
+        Context context;
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -86,7 +87,8 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             title =  itemView.findViewById(R.id.title_name);
             numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
-            itemView.setOnClickListener(listener );
+            itemView.setOnClickListener(listener);
+            context = itemView.getContext();
         }
     }
 

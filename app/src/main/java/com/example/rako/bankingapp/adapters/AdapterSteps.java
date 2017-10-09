@@ -41,7 +41,6 @@ public class AdapterSteps extends RecyclerView.Adapter<AdapterSteps.AdapterStepV
 
     @Override
     public void onBindViewHolder(AdapterStepViewHolder holder, int position) {
-        Log.i(TAG, String.valueOf(position));
         holder.title.setText(stepList.get(position).getShortDescription());
       }
 

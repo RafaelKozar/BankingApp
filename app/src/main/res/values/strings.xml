@@ -2,4 +2,8 @@
     <string name="app_name">BankingApp</string>
     <string name="mensagem_erro_conexao">Sem conexão com a internet</string>
     <string name="texto_repetir">Repetir</string>
+    <string name="texto_quantidade_ingredientes">%1$s Ingredientes</string>
+    <string name="texto_quantidade_pasos">%1$s Passos</string>
+    <string name="text_primeiro_passo">Este é o primeiro passo</string>
+    <string name="text_ultimo_passo">Este é o último passo</string>
 </resources>
