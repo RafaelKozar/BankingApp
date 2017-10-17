@@ -1,24 +1,54 @@
 package com.example.rako.bankingapp.fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.activitys.RecipeDetail;
+import com.example.rako.bankingapp.adapters.AdapterIngredientes;
+import com.example.rako.bankingapp.adapters.AdapterSteps;
+import com.example.rako.bankingapp.model.Ingredient;
+import com.example.rako.bankingapp.resources.ComponentListenner;
 import com.example.rako.bankingapp.resources.MySessionCallback;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+
+import java.util.List;
 
 /**
  * Created by rako on 29/09/2017.
@@ -30,7 +60,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private String urlVideo;
     private String stringTitulo;
     private String stringDescription;
-    private String TAG = this.getTag();
+    private static final String TAG = RecipeDetail.class.getSimpleName();
     private ImageButton buttonRight;
     private ImageButton buttonLeft;
 
@@ -38,6 +68,11 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+    private ComponentListenner componentListenner;
+    private boolean temVideo;
+    private boolean isIngredients;
+    private List<Ingredient> ingredientList;
+    private FrameLayout frameLayout;
 
 
     private GestureDetector gestureDetector;
@@ -55,6 +90,30 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         this.gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
+    public FragmentRecipeStepDetail(String urlVideo) {
+        this.urlVideo = urlVideo;
+        Log.i(TAG, "URLVideo "+ urlVideo);
+        setTemVideo(urlVideo);
+    }
+
+    public FragmentRecipeStepDetail(String urlVideo, List<Ingredient> ingredients) {
+        this.urlVideo = urlVideo;
+        Log.i(TAG, "URLVideo "+ urlVideo);
+        setTemVideo(urlVideo);
+        this.ingredientList = ingredients;
+        isIngredients = true;
+    }
+
+    public void setTemVideo(String urlVideo) {
+        if (urlVideo != null && !urlVideo.isEmpty()) {
+            temVideo = true;
+        } else {
+            temVideo = false;
+        }
+        isIngredients = false;
+    }
+
+
 
     @Nullable
     @Override
@@ -63,7 +122,8 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         titulo = view.findViewById(R.id.titulo_step);
         description = view.findViewById(R.id.description);
 
-        mPlayerView = view.findViewById(R.id.player_view);
+        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
+        frameLayout = view.findViewById(R.id.frame_no_video);
 
         buttonRight = view.findViewById(R.id.button_right);
         buttonLeft = view.findViewById(R.id.button_left);
@@ -85,6 +145,36 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         titulo.setText(stringTitulo);
         description.setText(stringDescription);
 
+        if (temVideo) {
+            initilizeMediaSession();
+            initializePlayer(Uri.parse(urlVideo));
+            frameLayout.setVisibility(View.GONE);
+
+        } else {
+            mPlayerView.setVisibility(View.GONE);
+            frameLayout.setVisibility(View.VISIBLE);
+        }
+
+        LinearLayout linearLayout = view.findViewById(R.id.separadores);
+        RecyclerView recyclerView = view.findViewById(R.id.ingredientes);
+        if (isIngredients) {
+            linearLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            description.setVisibility(View.GONE);
+            titulo.setText("Ingredientes");
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            recyclerView.setLayoutManager(layoutManager);
+
+            AdapterIngredientes adapterIngredientes = new AdapterIngredientes();
+            adapterIngredientes.setIngredientList(ingredientList);
+            recyclerView.setAdapter(adapterIngredientes);
+
+        } else {
+            linearLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            description.setVisibility(View.VISIBLE);
+        }
 
         view.setOnTouchListener(this);
         return view;
@@ -98,9 +188,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         this.stringTitulo = tituloString;
     }
 
-    public void setUrlVideo(String url) {
-        this.urlVideo = url;
-    }
 
     private void initilizeMediaSession() {
         // Create a MediaSessionCompat.
@@ -130,6 +217,51 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
         // Start the Media Session since the activity is active.
         mMediaSession.setActive(true);
+
+    }
+
+
+    private void initializePlayer(Uri mediaUri) {
+        if (mExoPlayer == null) {
+
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelection.Factory trackFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+            TrackSelector trackSelector = new DefaultTrackSelector(trackFactory);
+            RenderersFactory renderersFactory = new DefaultRenderersFactory(getContext());
+            LoadControl loadControl = new DefaultLoadControl();
+            //Create our instance of `ExoPlayer`
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(
+                    renderersFactory,
+                    trackSelector,
+                    loadControl);
+
+            mPlayerView.setPlayer(mExoPlayer);
+
+            // Set the ExoPlayer.EventListener to this activity.
+            componentListenner = new ComponentListenner(mStateBuilder, mExoPlayer, mMediaSession);
+            mExoPlayer.addListener(componentListenner);
+
+            // Prepare the MediaSource.
+            String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    private void releasePlayer() {
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        releasePlayer();
+        super.onDestroyView();
     }
 
     @Override
@@ -158,9 +290,11 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            listenerSwipe.delegateSwipeRight();
-                        } else {
+                            //listenerSwipe.delegateSwipeRight();
                             listenerSwipe.delegateSwipeLeft();
+                        } else {
+                            //listenerSwipe.delegateSwipeLeft();
+                            listenerSwipe.delegateSwipeRight();
                         }
                         result = true;
                     }

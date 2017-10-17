@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.activitys;
 
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,12 +14,15 @@ import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Step;
 
 import java.util.ArrayList;
+import java.util.jar.Manifest;
 
 public class RecipeDetail extends AppCompatActivity implements ListStepsFragment.interfaceClickStep,
         FragmentRecipeStepDetail.InterfacePhone {
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
     private int position;
+    //int permissionCheck = ContextCompat.checkSelfPermission(this,
+      //      android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
 
     @Override
@@ -65,14 +69,21 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
     public void setFragmentPhone(){
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentRecipeStepDetail fragmentDetailPhone = new FragmentRecipeStepDetail();
+        FragmentRecipeStepDetail fragmentDetailPhone = null;
+        if (position == 0) {
+            fragmentDetailPhone = new FragmentRecipeStepDetail(
+                    steps.get(position).getVideoURL(), ingredients);
+        }else {
+            fragmentDetailPhone = new FragmentRecipeStepDetail(
+                    steps.get(position).getVideoURL());
+        }
+
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_list_steps, fragmentDetailPhone)
                 .commit();
 
         fragmentDetailPhone.setDescription(steps.get(position).getDescription());
         fragmentDetailPhone.setTitulo(steps.get(position).getShortDescription());
-        fragmentDetailPhone.setUrlVideo(steps.get(position).getVideoURL());
 
     }
 
