@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -55,24 +56,18 @@ import java.util.List;
  */
 
 public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchListener{
-    private TextView titulo;
-    private TextView description;
     private String urlVideo;
     private String stringTitulo;
     private String stringDescription;
-    private static final String TAG = RecipeDetail.class.getSimpleName();
-    private ImageButton buttonRight;
-    private ImageButton buttonLeft;
+    private static final String TAG = FragmentRecipeStepDetail.class.getSimpleName();
 
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
-    private ComponentListenner componentListenner;
     private boolean temVideo;
     private boolean isIngredients;
     private List<Ingredient> ingredientList;
-    private FrameLayout frameLayout;
 
 
     private GestureDetector gestureDetector;
@@ -88,6 +83,10 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         super.onAttach(context);
         this.listenerSwipe = (InterfacePhone) context;
         this.gestureDetector = new GestureDetector(context, new GestureListener());
+    }
+
+    public FragmentRecipeStepDetail() {
+
     }
 
     public FragmentRecipeStepDetail(String urlVideo) {
@@ -119,31 +118,9 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_detail_view, container, false);
-        titulo = view.findViewById(R.id.titulo_step);
-        description = view.findViewById(R.id.description);
-
+        setRetainInstance(true);
         mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
-        frameLayout = view.findViewById(R.id.frame_no_video);
-
-        buttonRight = view.findViewById(R.id.button_right);
-        buttonLeft = view.findViewById(R.id.button_left);
-
-        buttonRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listenerSwipe.delegateSwipeRight();
-            }
-        });
-
-        buttonLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listenerSwipe.delegateSwipeLeft();
-            }
-        });
-
-        titulo.setText(stringTitulo);
-        description.setText(stringDescription);
+        FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
 
         if (temVideo) {
             initilizeMediaSession();
@@ -155,28 +132,55 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             frameLayout.setVisibility(View.VISIBLE);
         }
 
-        LinearLayout linearLayout = view.findViewById(R.id.separadores);
-        RecyclerView recyclerView = view.findViewById(R.id.ingredientes);
-        if (isIngredients) {
-            linearLayout.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            description.setVisibility(View.GONE);
-            titulo.setText("Ingredientes");
+        if (Configuration.ORIENTATION_LANDSCAPE != getResources().getConfiguration().orientation) {
+            TextView titulo = view.findViewById(R.id.titulo_step);
+            TextView description = view.findViewById(R.id.description);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-            recyclerView.setLayoutManager(layoutManager);
+            ImageButton buttonRight = view.findViewById(R.id.button_right);
+            ImageButton buttonLeft = view.findViewById(R.id.button_left);
 
-            AdapterIngredientes adapterIngredientes = new AdapterIngredientes();
-            adapterIngredientes.setIngredientList(ingredientList);
-            recyclerView.setAdapter(adapterIngredientes);
+            buttonRight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listenerSwipe.delegateSwipeRight();
+                }
+            });
 
-        } else {
-            linearLayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            description.setVisibility(View.VISIBLE);
+            buttonLeft.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listenerSwipe.delegateSwipeLeft();
+                }
+            });
+
+            titulo.setText(stringTitulo);
+            description.setText(stringDescription);
+
+            LinearLayout linearLayout = view.findViewById(R.id.separadores);
+            RecyclerView recyclerView = view.findViewById(R.id.ingredientes);
+            if (isIngredients) {
+                linearLayout.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
+                description.setVisibility(View.GONE);
+                titulo.setText(getString(R.string.texto_introducao_ingrediente));
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setNestedScrollingEnabled(false);
+
+                AdapterIngredientes adapterIngredientes = new AdapterIngredientes();
+                adapterIngredientes.setIngredientList(ingredientList);
+                recyclerView.setAdapter(adapterIngredientes);
+
+
+            } else {
+                linearLayout.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+                description.setVisibility(View.VISIBLE);
+            }
+
+            view.setOnTouchListener(this);
         }
-
-        view.setOnTouchListener(this);
         return view;
     }
 
@@ -238,7 +242,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             mPlayerView.setPlayer(mExoPlayer);
 
             // Set the ExoPlayer.EventListener to this activity.
-            componentListenner = new ComponentListenner(mStateBuilder, mExoPlayer, mMediaSession);
+            ComponentListenner componentListenner = new ComponentListenner(mStateBuilder, mExoPlayer, mMediaSession);
             mExoPlayer.addListener(componentListenner);
 
             // Prepare the MediaSource.

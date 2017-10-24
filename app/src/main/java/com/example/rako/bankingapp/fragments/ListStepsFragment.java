@@ -33,6 +33,7 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(fragment_list_steps, container, false);
+
         recyclerViewSteps = rootView.findViewById(R.id.list_steps);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerViewSteps.setLayoutManager(layoutManager);

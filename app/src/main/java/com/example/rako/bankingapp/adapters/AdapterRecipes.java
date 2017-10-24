@@ -33,6 +33,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         this.listennerClick = listennerClick;
     }
 
+
     @Override
     public AdapterRecipes.AdapterRecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -52,6 +53,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         holder.title.setText(recipes.get(position).getName());
         holder.numberIngredients.setText(holder.context.getString(R.string.texto_quantidade_ingredientes, String.valueOf(recipes.get(position).getNumberIngredients())));
         holder.numberSteps.setText(holder.context.getString(R.string.texto_quantidade_pasos, String.valueOf(recipes.get(position).getNumberSteps())));
+
 
     }
 
@@ -81,6 +83,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
                 listennerClick.onClickRecipe(getAdapterPosition());
             }
         };
+
 
         public AdapterRecipeViewHolder(View itemView) {
             super(itemView);

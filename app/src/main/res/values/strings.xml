@@ -7,4 +7,8 @@
     <string name="text_primeiro_passo">Este é o primeiro passo</string>
     <string name="text_ultimo_passo">Este é o último passo</string>
     <string name="texto_sem_video">Este passo não contem vídeo</string>
+    <string name="texto_introducao_ingrediente">Introdução Ingredientes</string>
+    <string name="texto_ingrediente">Ingredientes</string>
+    <string name="texto_mediada">Medidas</string>
+    <string name="texto_quantidade">Quantidades</string>
 </resources>

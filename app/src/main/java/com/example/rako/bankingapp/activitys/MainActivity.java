@@ -3,6 +3,7 @@ package com.example.rako.bankingapp.activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.Snackbar;
+import android.view.Display;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ProgressBar;
 
 
@@ -48,12 +51,24 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         createActivity();
     }
 
+
     public void createActivity(){
         if (NetworkConnection.isNetworkConnected(getApplicationContext())) {
             if (isTablet(this)) {
-                GridLayoutManager layoutManager = new GridLayoutManager(this, 5);
+                GridLayoutManager layoutManager;
+                if (Configuration.ORIENTATION_LANDSCAPE != getResources().getConfiguration().orientation) {
+                    layoutManager = new GridLayoutManager(this, 2);
+                } else {
+                    layoutManager = new GridLayoutManager(this, 4);
+                }
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x/2;
+                int height = size.y/5;
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);
+                layoutManager.setMeasuredDimension(width, height);
             } else {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 recyclerView.setLayoutManager(layoutManager);
