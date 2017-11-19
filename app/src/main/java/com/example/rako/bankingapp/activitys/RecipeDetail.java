@@ -19,8 +19,9 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
     private int position;
-    private static final String TAGstepsFragment = "stepsFragment";
+
     private static final String TAGrecipeDetailFragment = "detailFragment";
+    private static final String TAGDetailTabletFragment = "detailTabletFragment";
 
 
 
@@ -50,6 +51,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                 TAGrecipeDetailFragment
         );
 
+        FragmentSelectRecipeStepDetail fragmentSelectDetail = (FragmentSelectRecipeStepDetail) fragmentManager.findFragmentByTag(
+                TAGDetailTabletFragment
+        );
+
         if (fragmentDetailPhoneRetain == null) {
             ListStepsFragment listStepsFragment = new ListStepsFragment();
             listStepsFragment.setStepList(steps);
@@ -58,10 +63,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                     .add(R.id.fragment_list_steps, listStepsFragment)
                     .commit();
 
-            if (MainActivity.isTablet(this)) {
+            if (MainActivity.isTablet(this)  &&  fragmentSelectDetail != null) {
                 FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
                 fragmentManager.beginTransaction()
-                        .add(R.id.fragment_detail_step, fragmentDetailTablet, TAGstepsFragment)
+                        .add(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
                         .commit();
             }
         }
@@ -81,9 +86,18 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
     public void setFragmentTablet() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
+        FragmentSelectRecipeStepDetail fragmentDetailTablet = null;
+        if (position == 0) {
+            fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
+                    steps.get(position).getVideoURL(), ingredients
+            );
+        } else {
+            fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
+                    steps.get(position).getVideoURL()
+            );
+        }
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment_detail_step, fragmentDetailTablet)
+                .replace(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
                 .commit();
 
         fragmentDetailTablet.setDescription(steps.get(position).getDescription());

@@ -22,7 +22,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activitys.RecipeDetail"></activity>
+        <activity android:name=".activitys.RecipeDetail" />
+
+        <service
+            android:name=".widget.ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIES" />
+
+        <receiver android:name=".widget.SteptsWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredients_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

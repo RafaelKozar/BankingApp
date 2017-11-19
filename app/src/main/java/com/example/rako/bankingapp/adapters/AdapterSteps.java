@@ -1,7 +1,6 @@
 package com.example.rako.bankingapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class AdapterSteps extends RecyclerView.Adapter<AdapterSteps.AdapterStepV
 
         public AdapterStepViewHolder(View itemView){
             super(itemView);
-            title = itemView.findViewById(R.id.item_step);
+            title = itemView.findViewById(R.id.text_item_step);
             itemView.setOnClickListener(listener);
         }
     }

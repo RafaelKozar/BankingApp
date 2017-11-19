@@ -91,8 +91,9 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         } else {
             view = inflater.inflate(R.layout.fragment_select_step_detail_view_novideo, container, false);
         }
+        setRetainInstance(true);
 
-        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
+        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.simpleExoPlayerView);
 
         if (temVideo) {
             initilizeMediaSession();

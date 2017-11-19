@@ -1,5 +1,7 @@
 package com.example.rako.bankingapp.activitys;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -25,6 +27,8 @@ import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.adapters.AdapterRecipes;
 import com.example.rako.bankingapp.model.Step;
 import com.example.rako.bankingapp.services.RecipesService;
+import com.example.rako.bankingapp.widget.SteptsWidget;
+import com.example.rako.bankingapp.widget.Teste;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,5 +124,10 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         adapterRecipes.setRecipes(recipes);
         bar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
+
+        Teste.stepList = recipes.get(0).getStepList();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, SteptsWidget.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);
     }
 }
