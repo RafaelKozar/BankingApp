@@ -29,6 +29,7 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
 
     public ListRemoteViewsFactory(Context ctx)
     {
+        context = ctx;
         //getSteps();
         teste();
     }

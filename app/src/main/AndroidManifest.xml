@@ -26,7 +26,7 @@
 
         <service
             android:name=".widget.ListWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIES" />
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <receiver android:name=".widget.SteptsWidget">
             <intent-filter>

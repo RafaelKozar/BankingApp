@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         bar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
 
-        Teste.stepList = recipes.get(0).getStepList();
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+
+        /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, SteptsWidget.class));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);*/
     }
 }
