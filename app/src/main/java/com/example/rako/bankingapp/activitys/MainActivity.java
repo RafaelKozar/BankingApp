@@ -1,37 +1,37 @@
 package com.example.rako.bankingapp.activitys;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.os.Parcelable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.design.widget.Snackbar;
 import android.view.Display;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 
-
 import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.SimpleIdlingResource;
+import com.example.rako.bankingapp.adapters.AdapterRecipes;
 import com.example.rako.bankingapp.connection.NetworkConnection;
 import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Recipe;
-import com.example.rako.bankingapp.adapters.AdapterRecipes;
 import com.example.rako.bankingapp.model.Step;
 import com.example.rako.bankingapp.services.RecipesService;
-import com.example.rako.bankingapp.widget.SteptsWidget;
-import com.example.rako.bankingapp.widget.Teste;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.support.test.espresso.IdlingResource;
+
 
 public class MainActivity extends AppCompatActivity implements AdapterRecipes.ClickRecipe,
     RecipesService.AsyncTaskDelegateRecipes{
@@ -43,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
     private List<Recipe> recipeList;
     private List<Ingredient> ingredientList;
     private List<Step> stepList;
+    private SimpleIdlingResource mIdlingResource;
 
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
             adapterRecipes = new AdapterRecipes((AdapterRecipes.ClickRecipe) this);
             adapterRecipes.setTablet(isTablet(this));
             recyclerView.setAdapter(adapterRecipes);
-            new RecipesService(this, getSupportLoaderManager());
+            new RecipesService(this, getSupportLoaderManager(), mIdlingResource);
 
         }else{
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
@@ -124,10 +125,20 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         adapterRecipes.setRecipes(recipes);
         bar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
+        mIdlingResource.setIdlState(true);
 
 
         /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, SteptsWidget.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);*/
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
     }
 }

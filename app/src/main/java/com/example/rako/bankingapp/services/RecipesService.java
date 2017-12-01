@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.services;
 
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 
+import com.example.rako.bankingapp.SimpleIdlingResource;
 import com.example.rako.bankingapp.activitys.MainActivity;
 import com.example.rako.bankingapp.connection.NetworkConnection;
 import com.example.rako.bankingapp.model.Recipe;
@@ -30,13 +32,17 @@ public class RecipesService implements LoaderManager.LoaderCallbacks<List<Recipe
     private AsyncTaskDelegateRecipes delegateRecipes;
     private Context context;
 
-    public RecipesService(Context context, android.support.v4.app.LoaderManager supportLoaderManger) {
+    public RecipesService(Context context, android.support.v4.app.LoaderManager supportLoaderManger,
+                          @Nullable final SimpleIdlingResource idlingResource) {
         this.context = context;
         this.loaderManager = supportLoaderManger;
         this.delegateRecipes = (AsyncTaskDelegateRecipes) context;
         Bundle bundle = new Bundle();
         bundle.putString("url", recipesLink);
         loaderManager.initLoader(LOADER_MOVIES_RECIPES, bundle, this);
+        if (idlingResource != null) {
+            idlingResource.setIdlState(false);
+        }
     }
 
     @Override
