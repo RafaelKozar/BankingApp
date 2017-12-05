@@ -9,15 +9,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 
-import com.example.rako.bankingapp.SimpleIdlingResource;
-import com.example.rako.bankingapp.activitys.MainActivity;
+import com.example.rako.bankingapp.resources.SimpleIdlingResource;
 import com.example.rako.bankingapp.connection.NetworkConnection;
 import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.resources.FeedRecipes;
 
 import org.json.JSONArray;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -34,15 +32,16 @@ public class RecipesService implements LoaderManager.LoaderCallbacks<List<Recipe
 
     public RecipesService(Context context, android.support.v4.app.LoaderManager supportLoaderManger,
                           @Nullable final SimpleIdlingResource idlingResource) {
+
+        if (idlingResource != null) {
+            idlingResource.setIdlState(false);
+        }
         this.context = context;
         this.loaderManager = supportLoaderManger;
         this.delegateRecipes = (AsyncTaskDelegateRecipes) context;
         Bundle bundle = new Bundle();
         bundle.putString("url", recipesLink);
         loaderManager.initLoader(LOADER_MOVIES_RECIPES, bundle, this);
-        if (idlingResource != null) {
-            idlingResource.setIdlState(false);
-        }
     }
 
     @Override

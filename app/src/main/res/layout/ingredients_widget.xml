@@ -18,7 +18,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_below="@+id/text_app_name"
-        android:id="@+id/list_wiget_pass"
+        android:id="@+id/list_wiget_ingredients"
         android:background="@android:color/white"
         android:layout_marginTop="@dimen/margin_celula"
         android:layout_height="match_parent" />

@@ -22,7 +22,8 @@ import static com.example.rako.bankingapp.R.layout.fragment_list_steps;
  * Created by rako on 28/09/2017.
  */
 
-public class ListStepsFragment extends Fragment implements AdapterSteps.ClickStep{
+public class ListStepsFragment extends Fragment implements AdapterSteps.ClickStep {
+
 
     private RecyclerView recyclerViewSteps;
     private AdapterSteps adapterSteps;
@@ -65,7 +66,7 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
         listennerClickStep.onClickedStep(position);
     }
 
-    public interface interfaceClickStep{
+    public interface interfaceClickStep {
         void onClickedStep(int position);
     }
 }

@@ -24,18 +24,14 @@
         </activity>
         <activity android:name=".activitys.RecipeDetail" />
 
-        <service
-            android:name=".widget.ListWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
-
-        <receiver android:name=".widget.SteptsWidget">
+        <receiver android:name=".widget.BankWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/ingredients_widget_info" />
+                android:resource="@xml/bank_widget_info" />
         </receiver>
     </application>
 

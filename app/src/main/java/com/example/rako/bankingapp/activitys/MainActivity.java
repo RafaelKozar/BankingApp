@@ -19,7 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.rako.bankingapp.R;
-import com.example.rako.bankingapp.SimpleIdlingResource;
+import com.example.rako.bankingapp.resources.SimpleIdlingResource;
 import com.example.rako.bankingapp.adapters.AdapterRecipes;
 import com.example.rako.bankingapp.connection.NetworkConnection;
 import com.example.rako.bankingapp.model.Ingredient;
@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
     private List<Recipe> recipeList;
     private List<Ingredient> ingredientList;
     private List<Step> stepList;
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     private SimpleIdlingResource mIdlingResource;
 
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         recyclerView.setVisibility(View.INVISIBLE);
         bar.setVisibility(View.VISIBLE);
         createActivity();
+        getIdlingResource();
     }
 
 
@@ -133,8 +136,9 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);*/
     }
 
-    @VisibleForTesting
+
     @NonNull
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public IdlingResource getIdlingResource() {
         if (mIdlingResource == null) {
             mIdlingResource = new SimpleIdlingResource();

@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.widget.RemoteViewsService;
 
 /**
- * Created by Rafael Kozar on 19/11/2017.
+ * Created by Rafael Kozar on 04/12/2017.
  */
 
-public class ListWidgetService extends RemoteViewsService {
+public class BankWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListRemoteViewsFactory(this.getApplicationContext());
+        return new BankWidgetFactoryAdpter(this);
     }
 }
