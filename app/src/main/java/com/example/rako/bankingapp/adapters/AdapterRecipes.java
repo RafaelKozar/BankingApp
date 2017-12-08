@@ -140,12 +140,18 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
 
             numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
-            btnFavoritar = itemView.findViewById(R.id.btn_favoritar);
+
 
             //itemView.setOnClickListener(listener);
             title.setOnClickListener(listener);
             numberIngredients.setOnClickListener(listener);
             numberSteps.setOnClickListener(listener);
+
+            if (isTablet) {
+                btnFavoritar = itemView.findViewById(R.id.btn_favoritar_tablet);
+            } else {
+                btnFavoritar = itemView.findViewById(R.id.btn_favoritar);
+            }
 
             btnFavoritar.setOnClickListener(listenerFavoritar);
 
