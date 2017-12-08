@@ -32,11 +32,6 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
 
     public boolean isTablet() {
-        /*return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;*/
-
-
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -115,41 +110,6 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_recipe_favorito, menu);
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        MenuItem checkable = menu.findItem(R.id.checkable_menu);
-
-
-        if (Prefs.getLong(this.getString(R.string.key_preference_bank), 0)
-                == position) {
-            checkable.setChecked(true);
-        } else {
-            checkable.setChecked(false);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.checkable_menu:
-                if (Prefs.getLong(this.getString(R.string.key_preference_bank), 0)
-                        == position) {
-                    Prefs.putLong(this.getString(R.string.key_preference_bank), position);
-                    item.setChecked(true);
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void favoritar() {
-
-        invalidateOptionsMenu();
     }
 
     @Override

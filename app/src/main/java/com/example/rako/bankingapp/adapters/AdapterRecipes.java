@@ -1,5 +1,7 @@
 package com.example.rako.bankingapp.adapters;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.ColorStateList;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.model.Recipe;
+import com.example.rako.bankingapp.widget.BankingWidget;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
@@ -105,25 +108,31 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             @Override
             public void onClick(View view) {
                 listennerClick.onClickRecipe(getAdapterPosition());
+
             }
         };
 
-        /*View.OnClickListener listenerFavoritar = new View.OnClickListener() {
+        View.OnClickListener listenerFavoritar = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0)
                         == getAdapterPosition()) {
-                    btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorAccent)));
+                    //btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorAccent)));
                 } else {
                     int fvAntigo = (int) Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0);
-
+                    notifyItemChanged(fvAntigo);
                     Prefs.putLong(ctx.getString(R.string.key_preference_bank), getAdapterPosition());
                     btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorPrimary)));
+
+
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx.getApplicationContext());
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(ctx.getApplicationContext(), BankingWidget.class));
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_ingredients);
                 }
 
                  //setImageTintList(new ColorStateList());
             }
-        };*/
+        };
 
         public AdapterRecipeViewHolder(View itemView) {
             super(itemView);
@@ -133,12 +142,12 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
             btnFavoritar = itemView.findViewById(R.id.btn_favoritar);
 
-            itemView.setOnClickListener(listener);
-            /*title.setOnClickListener(listener);
+            //itemView.setOnClickListener(listener);
+            title.setOnClickListener(listener);
             numberIngredients.setOnClickListener(listener);
             numberSteps.setOnClickListener(listener);
 
-            //btnFavoritar.setOnClickListener(listenerFavoritar); */
+            btnFavoritar.setOnClickListener(listenerFavoritar);
 
             context = itemView.getContext();
         }

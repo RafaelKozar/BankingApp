@@ -1,6 +1,8 @@
 package com.example.rako.bankingapp.services;
 
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -9,10 +11,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 
+import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.resources.SimpleIdlingResource;
 import com.example.rako.bankingapp.connection.NetworkConnection;
 import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.resources.FeedRecipes;
+import com.example.rako.bankingapp.widget.BankWidgetFactoryAdpter;
+import com.example.rako.bankingapp.widget.BankingWidget;
 
 import org.json.JSONArray;
 
@@ -62,6 +67,11 @@ public class RecipesService implements LoaderManager.LoaderCallbacks<List<Recipe
                     URL url = new URL(bundle.getString("url"));
                     JSONArray jsonArray = NetworkConnection.getResponseFromHttpUrl(url);
                     List<Recipe> recipes = FeedRecipes.process(jsonArray);
+                    BankWidgetFactoryAdpter.recipes = recipes;
+
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context.getApplicationContext(), BankingWidget.class));
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_ingredients);
                     return  recipes;
                 } catch (Exception e) {
                     e.printStackTrace();
