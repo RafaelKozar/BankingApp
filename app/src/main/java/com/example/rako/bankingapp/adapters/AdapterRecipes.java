@@ -1,15 +1,21 @@
 package com.example.rako.bankingapp.adapters;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.model.Recipe;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +28,25 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
     private static final String TAG = "AdapterRecipes";
     private List<Recipe> recipes = new ArrayList<Recipe>();
     private boolean isTablet;
+    private Context ctx;
 
     private ClickRecipe listennerClick;
+
 
     public interface ClickRecipe {
         void onClickRecipe(int position);
     }
 
-    public AdapterRecipes(ClickRecipe listennerClick) {
+
+    public AdapterRecipes(ClickRecipe listennerClick, Context context) {
         this.listennerClick = listennerClick;
+        this.ctx = context;
+        new Prefs.Builder()
+                .setContext(context)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(context.getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
     }
 
 
@@ -54,6 +70,12 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         holder.numberIngredients.setText(holder.context.getString(R.string.texto_quantidade_ingredientes, String.valueOf(recipes.get(position).getNumberIngredients())));
         holder.numberSteps.setText(holder.context.getString(R.string.texto_quantidade_pasos, String.valueOf(recipes.get(position).getNumberSteps())));
 
+        if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0) == position) {
+            holder.btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorPrimary)));
+        }else{
+            holder.btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorAccent)));
+        }
+
 
     }
 
@@ -76,6 +98,8 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         TextView numberIngredients;
         TextView numberSteps;
         Context context;
+        ImageView btnFavoritar;
+
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -84,13 +108,38 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             }
         };
 
+        /*View.OnClickListener listenerFavoritar = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0)
+                        == getAdapterPosition()) {
+                    btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorAccent)));
+                } else {
+                    int fvAntigo = (int) Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0);
+
+                    Prefs.putLong(ctx.getString(R.string.key_preference_bank), getAdapterPosition());
+                    btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorPrimary)));
+                }
+
+                 //setImageTintList(new ColorStateList());
+            }
+        };*/
 
         public AdapterRecipeViewHolder(View itemView) {
             super(itemView);
             title =  itemView.findViewById(R.id.title_name);
+
             numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
+            btnFavoritar = itemView.findViewById(R.id.btn_favoritar);
+
             itemView.setOnClickListener(listener);
+            /*title.setOnClickListener(listener);
+            numberIngredients.setOnClickListener(listener);
+            numberSteps.setOnClickListener(listener);
+
+            //btnFavoritar.setOnClickListener(listenerFavoritar); */
+
             context = itemView.getContext();
         }
     }

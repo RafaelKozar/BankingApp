@@ -1,8 +1,14 @@
 package com.example.rako.bankingapp.activitys;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.rako.bankingapp.R;
@@ -11,6 +17,7 @@ import com.example.rako.bankingapp.fragments.ListStepsFragment;
 import com.example.rako.bankingapp.fragments.FragmentSelectRecipeStepDetail;
 import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Step;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
 
@@ -24,12 +31,42 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     private static final String TAGDetailTabletFragment = "detailTabletFragment";
 
 
+    public boolean isTablet() {
+        /*return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;*/
+
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches= metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        if (diagonalInches>=6.5){
+            return true;
+
+        }else{
+            return false;
+        }
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_detail);
+        if (isTablet()) {
+            setContentView(R.layout.activity_recipe_detail_tablet);
+        } else {
+            setContentView(R.layout.activity_recipe_detail);
+        }
+
+        new Prefs.Builder()
+                .setContext(this)
+                .setMode(ContextWrapper.MODE_PRIVATE)
+                .setPrefsName(this.getPackageName())
+                .setUseDefaultSharedPreference(true)
+                .build();
 
         if (savedInstanceState != null) {
             ingredients = savedInstanceState.getParcelableArrayList("ingredientes");
@@ -63,7 +100,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                     .add(R.id.fragment_list_steps, listStepsFragment)
                     .commit();
 
-            if (MainActivity.isTablet(this)  &&  fragmentSelectDetail != null) {
+            if (isTablet()  &&  fragmentSelectDetail != null) {
                 FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
                 fragmentManager.beginTransaction()
                         .add(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
@@ -74,10 +111,52 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_recipe_favorito, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem checkable = menu.findItem(R.id.checkable_menu);
+
+
+        if (Prefs.getLong(this.getString(R.string.key_preference_bank), 0)
+                == position) {
+            checkable.setChecked(true);
+        } else {
+            checkable.setChecked(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.checkable_menu:
+                if (Prefs.getLong(this.getString(R.string.key_preference_bank), 0)
+                        == position) {
+                    Prefs.putLong(this.getString(R.string.key_preference_bank), position);
+                    item.setChecked(true);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void favoritar() {
+
+        invalidateOptionsMenu();
+    }
+
+    @Override
     public void onClickedStep(int position) {
         Toast.makeText(this, "Você clicou no passo " + String.valueOf(position), Toast.LENGTH_SHORT).show();
         this.position = position;
-        if (MainActivity.isTablet(this)) {
+        if (isTablet()) {
             setFragmentTablet();
         } else {
             setFragmentPhone();

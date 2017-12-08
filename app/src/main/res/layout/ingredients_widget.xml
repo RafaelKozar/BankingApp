@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorBackground"
         android:text="@string/app_name"
+        android:layout_marginLeft="@dimen/widget_margin"
         android:id="@+id/text_app_name"
         android:layout_marginTop="@dimen/margin_celula"
         tools:text="@string/app_name"/>
@@ -21,6 +22,7 @@
         android:id="@+id/list_wiget_ingredients"
         android:background="@android:color/white"
         android:layout_marginTop="@dimen/margin_celula"
+        android:layout_margin="@dimen/margin_widget"
         android:layout_height="match_parent" />
 
 </RelativeLayout>

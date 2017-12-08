@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.activitys;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -26,6 +28,7 @@ import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.model.Step;
 import com.example.rako.bankingapp.services.RecipesService;
+import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         bar.setVisibility(View.VISIBLE);
         createActivity();
         getIdlingResource();
+
+
+
+
+
     }
 
 
@@ -83,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
             }
 
             recyclerView.setHasFixedSize(true);
-            adapterRecipes = new AdapterRecipes((AdapterRecipes.ClickRecipe) this);
+            adapterRecipes = new AdapterRecipes((AdapterRecipes.ClickRecipe) this, this);
             adapterRecipes.setTablet(isTablet(this));
+
             recyclerView.setAdapter(adapterRecipes);
             new RecipesService(this, getSupportLoaderManager(), mIdlingResource);
 
@@ -106,10 +115,24 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
     }
 
 
-    public static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
+    public boolean isTablet(Context context) {
+        /*return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;*/
+
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches= metrics.heightPixels/metrics.ydpi;
+        float xInches= metrics.widthPixels/metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
+        if (diagonalInches>=6.5){
+            return true;
+
+        }else{
+            return false;
+        }
     }
 
     @Override

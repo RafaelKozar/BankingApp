@@ -13,4 +13,7 @@
     <string name="texto_quantidade">Quantidades</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="key_preference_bank">key_preference</string>
+    <string name="favorito">favorito</string>
+    <string name="checkable">Marque como favorito</string>
 </resources>
