@@ -20,7 +20,6 @@
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
         android:layout_width="match_parent"

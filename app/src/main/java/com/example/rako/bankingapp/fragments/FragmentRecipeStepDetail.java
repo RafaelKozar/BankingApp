@@ -54,6 +54,8 @@ import com.squareup.picasso.Picasso;
 import java.sql.Struct;
 import java.util.List;
 
+import static com.google.android.exoplayer2.ExoPlayer.STATE_READY;
+
 /**
  * Created by rako on 29/09/2017.
  */
@@ -74,6 +76,10 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private boolean isIngredients;
     private List<Ingredient> ingredientList;
 
+    private Long positionTime;
+    private boolean isReady;
+    private static final String POSITION = "positionTime";
+    private static final String PLAY_PAUSE = "getPlayPause";
 
     private GestureDetector gestureDetector;
     private InterfacePhone listenerSwipe;
@@ -96,7 +102,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     public FragmentRecipeStepDetail(String urlVideo, String urlImage) {
         this.urlVideo = urlVideo;
-
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
         setTemImg(urlImage);
@@ -104,7 +109,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     public FragmentRecipeStepDetail(String urlVideo, String urlImage, List<Ingredient> ingredients) {
         this.urlVideo = urlVideo;
-
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
         setTemImg(urlImage);
@@ -134,11 +138,14 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
         ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
 
+        if (savedInstanceState != null) {
+            positionTime = savedInstanceState.getLong(POSITION, 0);
+            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
+        }
         if (temVideo) {
             initilizeMediaSession();
             initializePlayer(Uri.parse(urlVideo));
             frameLayout.setVisibility(View.GONE);
-            thumbnail.setVisibility(View.GONE);
         } else {
             mPlayerView.setVisibility(View.GONE);
             if (temImg) {
@@ -193,7 +200,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
                 AdapterIngredientes adapterIngredientes = new AdapterIngredientes();
                 adapterIngredientes.setIngredientList(ingredientList);
                 recyclerView.setAdapter(adapterIngredientes);
-
 
             } else {
                 linearLayout.setVisibility(View.GONE);
@@ -261,6 +267,10 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
                     trackSelector,
                     loadControl);
 
+            if (positionTime != null && positionTime != 0) {
+                mExoPlayer.seekTo(positionTime);
+            }
+
             mPlayerView.setPlayer(mExoPlayer);
 
             // Set the ExoPlayer.EventListener to this activity.
@@ -272,7 +282,11 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            if (isReady) {
+                mExoPlayer.setPlayWhenReady(true);
+            } else {
+                mExoPlayer.setPlayWhenReady(false);
+            }
         }
     }
 
@@ -282,6 +296,20 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             mExoPlayer.release();
             mExoPlayer = null;
         }
+    }
+
+    @Override
+    public void onPause() {
+        positionTime = mExoPlayer.getCurrentPosition();
+        isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+        super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putLong(POSITION, positionTime);
+        outState.putBoolean(PLAY_PAUSE, isReady);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

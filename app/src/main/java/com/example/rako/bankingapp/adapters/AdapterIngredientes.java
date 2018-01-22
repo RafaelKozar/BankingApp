@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,13 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
 
     @Override
     public void onBindViewHolder(AdapterIngredientViewHolder holder, int position) {
-        holder.ingrediente.setText(ingredientList.get(position).getIngredient());
-        holder.medida.setText(ingredientList.get(position).getMeasure());
-        holder.quantidade.setText(String.valueOf(ingredientList.get(position).getQuantity()));
+        try {
+            holder.ingrediente.setText(ingredientList.get(position).getIngredient());
+            holder.medida.setText(ingredientList.get(position).getMeasure());
+            holder.quantidade.setText(String.valueOf(ingredientList.get(position).getQuantity()));
+        } catch (Exception e) {
+            Log.e(this.getClass().getName(), e.toString());
+        }
       }
 
     public void setIngredientList(List<Ingredient> ingredients){

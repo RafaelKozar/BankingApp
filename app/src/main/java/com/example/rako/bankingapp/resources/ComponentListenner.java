@@ -1,8 +1,11 @@
 package com.example.rako.bankingapp.resources;
 
+import android.content.Context;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
+import com.example.rako.bankingapp.activitys.MainActivity;
+import com.example.rako.bankingapp.fragments.FragmentRecipeStepDetail;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -45,8 +48,7 @@ public class ComponentListenner implements ExoPlayer.EventListener{
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
         } else if((playbackState == ExoPlayer.STATE_READY)){
