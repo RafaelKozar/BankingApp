@@ -61,10 +61,6 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         createActivity();
         getIdlingResource();
 
-
-
-
-
     }
 
 
@@ -129,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
         if (diagonalInches>=6.5){
             return true;
-
         }else{
             return false;
         }
@@ -152,11 +147,6 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
         bar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         mIdlingResource.setIdlState(true);
-
-
-        /*AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, SteptsWidget.class));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_pass);*/
     }
 
 

@@ -39,10 +39,6 @@ public class BankWidgetFactoryAdpter implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onCreate() {
-        /*ingredientList = new ArrayList<Ingredient>();
-        ingredientList.add(new Ingredient("Tesfdste", "teerste", (float) 0.9));
-        ingredientList.add(new Ingredient("Tefdsste", "tfdseste", (float) 0.9));
-        ingredientList.add(new Ingredient("Tesewte", "tesfdste", (float) 5.2));*/
 
         new Prefs.Builder()
                 .setContext(context)

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,7 +49,9 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
+import java.sql.Struct;
 import java.util.List;
 
 /**
@@ -57,6 +60,7 @@ import java.util.List;
 
 public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchListener{
     private String urlVideo;
+    private String urlImage;
     private String stringTitulo;
     private String stringDescription;
     private static final String TAG = FragmentRecipeStepDetail.class.getSimpleName();
@@ -66,6 +70,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private boolean temVideo;
+    private boolean temImg;
     private boolean isIngredients;
     private List<Ingredient> ingredientList;
 
@@ -89,16 +94,20 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     }
 
-    public FragmentRecipeStepDetail(String urlVideo) {
+    public FragmentRecipeStepDetail(String urlVideo, String urlImage) {
         this.urlVideo = urlVideo;
-        Log.i(TAG, "URLVideo "+ urlVideo);
+
+        this.urlImage = urlImage;
         setTemVideo(urlVideo);
+        setTemImg(urlImage);
     }
 
-    public FragmentRecipeStepDetail(String urlVideo, List<Ingredient> ingredients) {
+    public FragmentRecipeStepDetail(String urlVideo, String urlImage, List<Ingredient> ingredients) {
         this.urlVideo = urlVideo;
-        Log.i(TAG, "URLVideo "+ urlVideo);
+
+        this.urlImage = urlImage;
         setTemVideo(urlVideo);
+        setTemImg(urlImage);
         this.ingredientList = ingredients;
         isIngredients = true;
     }
@@ -112,7 +121,9 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         isIngredients = false;
     }
 
-
+    public void setTemImg(String urlImage) {
+        this.temImg = urlImage != null && !urlImage.isEmpty();
+    }
 
     @Nullable
     @Override
@@ -121,15 +132,26 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         setRetainInstance(true);
         mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
         FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
+        ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
 
         if (temVideo) {
             initilizeMediaSession();
             initializePlayer(Uri.parse(urlVideo));
             frameLayout.setVisibility(View.GONE);
-
+            thumbnail.setVisibility(View.GONE);
         } else {
             mPlayerView.setVisibility(View.GONE);
-            frameLayout.setVisibility(View.VISIBLE);
+            if (temImg) {
+                Picasso.with(getContext())
+                        .load(urlImage)
+                        .into(thumbnail);
+                thumbnail.setVisibility(View.VISIBLE);
+                frameLayout.setVisibility(View.INVISIBLE);
+            } else {
+                frameLayout.setVisibility(View.VISIBLE);
+                thumbnail.setVisibility(View.GONE);
+            }
+
         }
 
         if (Configuration.ORIENTATION_LANDSCAPE != getResources().getConfiguration().orientation) {

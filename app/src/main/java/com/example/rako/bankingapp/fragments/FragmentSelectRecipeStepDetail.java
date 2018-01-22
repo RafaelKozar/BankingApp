@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rako.bankingapp.R;
@@ -36,6 +37,7 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -53,23 +55,27 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
     private List<Ingredient> ingredientList;
 
     private boolean temVideo;
+    private boolean temImg;
     private boolean isIngredients;
     private String urlVideo;
     private String stringTitulo;
+    private String urlImg;
     private String stringDescription;
 
-    public FragmentSelectRecipeStepDetail(String urlVideo) {
+    public FragmentSelectRecipeStepDetail(String urlVideo, String urlImg) {
         Log.i(TAG, "URLVideo "+ urlVideo);
         this.urlVideo = urlVideo;
         isIngredients = false;
+        this.urlImg = urlImg;
         setTemVideo(urlVideo);
     }
 
-    public FragmentSelectRecipeStepDetail(String urlVideo, List<Ingredient> ingredients) {
+    public FragmentSelectRecipeStepDetail(String urlVideo, List<Ingredient> ingredients, String urlImg) {
         Log.i(TAG, "URLVideo "+ urlVideo);
         this.urlVideo = urlVideo;
         this.ingredientList = ingredients;
         isIngredients = true;
+        this.urlImg = urlImg;
         setTemVideo(urlVideo);
     }
 
@@ -81,6 +87,9 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         temVideo = urlVideo != null && !urlVideo.isEmpty();
     }
 
+    public void setTemImg(String urlImg) {
+         temImg = urlImg != null && !urlImg.isEmpty();
+    }
 
     @Nullable
     @Override
@@ -90,6 +99,16 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
             view = inflater.inflate(R.layout.fragment_select_step_detail_view, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_select_step_detail_view_novideo, container, false);
+            TextView textViewNoImg = view.findViewById(R.id.text_sem_img);
+            if (temImg) {
+                ImageView imageView = view.findViewById(R.id.thumbnailIMG);
+                Picasso.with(getContext())
+                        .load(urlImg)
+                        .into(imageView);
+                textViewNoImg.setVisibility(View.GONE);
+            } else {
+                textViewNoImg.setVisibility(View.VISIBLE);
+            }
         }
         setRetainInstance(true);
 
@@ -104,7 +123,6 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         TextView description = view.findViewById(R.id.description);
         titulo.setText(stringTitulo);
         description.setText(stringDescription);
-
 
         return view;
     }

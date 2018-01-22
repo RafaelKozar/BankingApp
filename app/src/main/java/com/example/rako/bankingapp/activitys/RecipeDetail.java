@@ -40,7 +40,6 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
         if (diagonalInches>=6.5){
             return true;
-
         }else{
             return false;
         }
@@ -128,11 +127,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         FragmentSelectRecipeStepDetail fragmentDetailTablet = null;
         if (position == 0) {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
-                    steps.get(position).getVideoURL(), ingredients
+                    steps.get(position).getVideoURL(), ingredients, steps.get(position).getThumbnailURL()
             );
         } else {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
-                    steps.get(position).getVideoURL()
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL()
             );
         }
         fragmentManager.beginTransaction()
@@ -149,10 +148,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         FragmentRecipeStepDetail fragmentDetailPhone = null;
         if (position == 0) {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
-                    steps.get(position).getVideoURL(), ingredients);
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(), ingredients);
         } else {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
-                    steps.get(position).getVideoURL());
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL());
         }
 
         fragmentManager.beginTransaction()
