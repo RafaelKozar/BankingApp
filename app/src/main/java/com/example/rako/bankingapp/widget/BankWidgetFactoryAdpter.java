@@ -53,7 +53,9 @@ public class BankWidgetFactoryAdpter implements RemoteViewsService.RemoteViewsFa
             url = new URL(recipesLink);
             JSONArray jsonArray = NetworkConnection.getResponseFromHttpUrl(url);
             recipes = FeedRecipes.process(jsonArray);
-            Log.e("hehe", "heh");
+            Log.e("Receita - Preferida", recipes.get((int) Prefs
+                    .getLong(context.getString(R.string.key_preference_bank), 0)).getName());
+
             ingredientList = recipes.get((int) Prefs
                     .getLong(context.getString(R.string.key_preference_bank), 0)).
                     getIngredientList();
@@ -92,18 +94,13 @@ public class BankWidgetFactoryAdpter implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public RemoteViews getViewAt(int i) {
-        Log.e("teste", "hhe");
         RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.item_ingredient_widget);
         //view.setTextViewText(R.id.item_name_igredient,  list.get(i));
         view.setTextViewText(R.id.item_name_igredient, ingredientList.get(i).getIngredient());
-        Log.e("getViewAt - ", ingredientList.get(i).getIngredient());
 
-
-       view.setTextViewText(R.id.item_measure, ingredientList.get(i).getMeasure());
-        Log.e("getViewAt - ", ingredientList.get(i).getMeasure());
+        view.setTextViewText(R.id.item_measure, ingredientList.get(i).getMeasure());
 
         view.setTextViewText(R.id.item_quantity, String.valueOf(ingredientList.get(i).getQuantity()));
-        Log.e("getViewAt - ", String.valueOf(ingredientList.get(i).getQuantity()));
 
         return view;
     }
