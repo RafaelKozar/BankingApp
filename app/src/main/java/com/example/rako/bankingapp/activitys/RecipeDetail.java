@@ -1,6 +1,5 @@
 package com.example.rako.bankingapp.activitys;
 
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +7,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
+
 
 import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.fragments.FragmentRecipeStepDetail;
@@ -113,7 +111,6 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
     @Override
     public void onClickedStep(int position) {
-        Toast.makeText(this, "Você clicou no passo " + String.valueOf(position), Toast.LENGTH_SHORT).show();
         this.position = position;
         if (isTablet()) {
             setFragmentTablet();
@@ -177,10 +174,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         if (position < (steps.size() - 1)) {
             this.position++;
             setFragmentPhone();
-        } else {
+        } /*else {
             Toast.makeText(this, getString(R.string.text_ultimo_passo), Toast.LENGTH_SHORT)
                     .show();
-        }
+        }*/
 
     }
 
@@ -189,9 +186,9 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         if (position > 0) {
             this.position--;
             setFragmentPhone();
-        } else {
+        } /*else {
             Toast.makeText(this, getString(R.string.text_primeiro_passo), Toast.LENGTH_SHORT)
                     .show();
-        }
+        }*/
     }
 }
