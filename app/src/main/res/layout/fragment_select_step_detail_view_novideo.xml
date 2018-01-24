@@ -45,15 +45,39 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="#000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/titulo_step"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         android:src="@android:color/black"
-        android:id="@+id/thumbnailIMG">
-            <TextView
-                android:id="@+id/text_sem_img"
-                android:gravity="center"
-                android:visibility="gone"
-                android:text="Sem imagem"/>
-    </ImageView>
+        android:id="@+id/thumbnailIMG"/>
+
+    <FrameLayout
+        android:id="@+id/frame_no_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintBottom_toTopOf="@+id/titulo_step"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:visibility="visible">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="368dp"
+            android:layout_height="132dp"
+            android:gravity="center"
+            android:text="@string/texto_sem_video"
+            android:textColor="@color/colorBackground"
+            tools:text="Não contem Vídeo" />
+
+    </FrameLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"

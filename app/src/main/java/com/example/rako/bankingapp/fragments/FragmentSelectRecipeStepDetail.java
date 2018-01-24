@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -106,15 +107,19 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
             view = inflater.inflate(R.layout.fragment_select_step_detail_view, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_select_step_detail_view_novideo, container, false);
-            TextView textViewNoImg = view.findViewById(R.id.text_sem_img);
+            FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
+            ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
+
             if (temImg) {
                 ImageView imageView = view.findViewById(R.id.thumbnailIMG);
                 Picasso.with(getContext())
                         .load(urlImg)
                         .into(imageView);
-                textViewNoImg.setVisibility(View.GONE);
+                thumbnail.setVisibility(View.VISIBLE);
+                frameLayout.setVisibility(View.GONE);
             } else {
-                textViewNoImg.setVisibility(View.VISIBLE);
+                thumbnail.setVisibility(View.GONE);
+                frameLayout.setVisibility(View.VISIBLE);
             }
         }
         setRetainInstance(true);
