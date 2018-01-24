@@ -132,16 +132,13 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e("FragmentRecipeStepDetail", "OnCreateView");
         View view = inflater.inflate(R.layout.fragment_step_detail_view, container, false);
         setRetainInstance(true);
         mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
         FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
         ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
 
-        if (savedInstanceState != null) {
-            positionTime = savedInstanceState.getLong(POSITION, 0);
-            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
-        }
         if (temVideo) {
             initilizeMediaSession();
             initializePlayer(Uri.parse(urlVideo));
@@ -252,10 +249,26 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     }
 
+    @Override
+    public void onResume() {
+        Log.e("FragmentRecipeStepDetail", "onResume");
+        setmExoPlayerBackView();
+        super.onResume();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.e("FragmentRecipeStepDetail", "onViewStateRestored");
+        if (savedInstanceState != null) {
+            positionTime = savedInstanceState.getLong(POSITION, 0);
+            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
+            setmExoPlayerBackView();
+        }
+        super.onViewStateRestored(savedInstanceState);
+    }
 
     private void initializePlayer(Uri mediaUri) {
         if (mExoPlayer == null) {
-
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelection.Factory trackFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
             TrackSelector trackSelector = new DefaultTrackSelector(trackFactory);
@@ -266,10 +279,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
                     renderersFactory,
                     trackSelector,
                     loadControl);
-
-            if (positionTime != null && positionTime != 0) {
-                mExoPlayer.seekTo(positionTime);
-            }
 
             mPlayerView.setPlayer(mExoPlayer);
 
@@ -282,6 +291,18 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
+        }
+    }
+
+    public void setmExoPlayerBackView() {
+        if (temVideo) {
+            initilizeMediaSession();
+            initializePlayer(Uri.parse(urlVideo));
+        }
+        if (mExoPlayer != null) {
+            if (positionTime != null && positionTime != 0) {
+                mExoPlayer.seekTo(positionTime);
+            }
             if (isReady) {
                 mExoPlayer.setPlayWhenReady(true);
             } else {
@@ -291,18 +312,27 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     }
 
     private void releasePlayer() {
-        if (mExoPlayer != null) {
-            mExoPlayer.stop();
-            mExoPlayer.release();
-            mExoPlayer = null;
-        }
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
     }
 
     @Override
     public void onPause() {
-        positionTime = mExoPlayer.getCurrentPosition();
-        isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+        Log.e("FragmentRecipeStepDetail", "onPause");
+        if (mExoPlayer != null) {
+            positionTime = mExoPlayer.getCurrentPosition();
+            isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+            onSaveInstanceState(new Bundle());
+            releasePlayer();
+        }
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.e("FragmentRecipeStepDetail", "onStop");
+        super.onStop();
     }
 
     @Override
@@ -310,12 +340,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         outState.putLong(POSITION, positionTime);
         outState.putBoolean(PLAY_PAUSE, isReady);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroyView() {
-        releasePlayer();
-        super.onDestroyView();
     }
 
     @Override

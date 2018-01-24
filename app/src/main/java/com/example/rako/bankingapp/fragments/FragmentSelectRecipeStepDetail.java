@@ -130,12 +130,6 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         TextView description = view.findViewById(R.id.description);
         titulo.setText(stringTitulo);
         description.setText(stringDescription);
-
-        if (savedInstanceState != null) {
-            positionTime = savedInstanceState.getLong(POSITION, 0);
-            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
-        }
-
         return view;
     }
 
@@ -183,11 +177,6 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
                     renderersFactory,
                     trackSelector,
                     loadControl);
-
-            if (positionTime != null && positionTime != 0) {
-                mExoPlayer.seekTo(positionTime);
-            }
-
             mPlayerView.setPlayer(mExoPlayer);
 
             // Set the ExoPlayer.EventListener to this activity.
@@ -199,26 +188,23 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
 
-            mExoPlayer.prepare(mediaSource);
-            if (isReady) {
-                mExoPlayer.setPlayWhenReady(true);
-            } else {
-                mExoPlayer.setPlayWhenReady(false);
-            }
+            setmExoPlayerBackView();
         }
     }
 
     private void releasePlayer() {
-        if (mExoPlayer != null) {
-            mExoPlayer.stop();
-            mExoPlayer.release();
-            mExoPlayer = null;
-        }
+        mExoPlayer.release();
+        mExoPlayer.stop();
+        mExoPlayer = null;
     }
 
     public void onPause() {
-        positionTime = mExoPlayer.getCurrentPosition();
-        isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+        if (mExoPlayer != null) {
+            positionTime = mExoPlayer.getCurrentPosition();
+            isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+            onSaveInstanceState(new Bundle());
+            releasePlayer();
+        }
         super.onPause();
     }
 
@@ -229,17 +215,46 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void onDestroyView() {
-        releasePlayer();
-        super.onDestroyView();
-    }
-
     public void setTitulo(String stringTitulo) {
         this.stringTitulo = stringTitulo;
     }
 
     public void setDescription(String stringDescription) {
         this.stringDescription = stringDescription;
+    }
+
+    public void setmExoPlayerBackView() {
+        if (temVideo) {
+            initilizeMediaSession();
+            initializePlayer(Uri.parse(urlVideo));
+        }
+        if (mExoPlayer != null) {
+            if (positionTime != null && positionTime != 0) {
+                mExoPlayer.seekTo(positionTime);
+            }
+            if (isReady) {
+                mExoPlayer.setPlayWhenReady(true);
+            } else {
+                mExoPlayer.setPlayWhenReady(false);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        Log.e("FragmentRecipeStepDetail", "onResume");
+        setmExoPlayerBackView();
+        super.onResume();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.e("FragmentRecipeStepDetail", "onViewStateRestored");
+        if (savedInstanceState != null) {
+           positionTime = savedInstanceState.getLong(POSITION, 0);
+           isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
+           setmExoPlayerBackView();
+        }
+        super.onViewStateRestored(savedInstanceState);
     }
 }
