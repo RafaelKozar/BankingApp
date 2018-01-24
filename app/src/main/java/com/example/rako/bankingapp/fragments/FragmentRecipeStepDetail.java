@@ -138,7 +138,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         setRetainInstance(true);
         mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
         FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
-        ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
+        ImageView thumbnail = view.findViewById(R.id.thumbnailIMG_phone);
 
         if (temVideo) {
             initilizeMediaSession();
