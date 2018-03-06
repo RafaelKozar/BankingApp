@@ -163,23 +163,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             TextView titulo = view.findViewById(R.id.titulo_step);
             TextView description = view.findViewById(R.id.description);
 
-            ImageButton buttonRight = view.findViewById(R.id.button_right);
-            ImageButton buttonLeft = view.findViewById(R.id.button_left);
-
-            buttonRight.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listenerSwipe.delegateSwipeRight();
-                }
-            });
-
-            buttonLeft.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listenerSwipe.delegateSwipeLeft();
-                }
-            });
-
             titulo.setText(stringTitulo);
             description.setText(stringDescription);
 

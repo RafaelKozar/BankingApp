@@ -102,6 +102,8 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         TextView numberSteps;
         Context context;
         ImageView btnFavoritar;
+        LinearLayout btnFavoritarLayout;
+        LinearLayout item;
 
 
         View.OnClickListener listener = new View.OnClickListener() {
@@ -116,9 +118,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             @Override
             public void onClick(View view) {
                 if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0)
-                        == getAdapterPosition()) {
-                    //btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorAccent)));
-                } else {
+                        != getAdapterPosition()){
                     int fvAntigo = (int) Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0);
                     notifyItemChanged(fvAntigo);
                     Prefs.putLong(ctx.getString(R.string.key_preference_bank), getAdapterPosition());
@@ -129,8 +129,6 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
                     int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(ctx.getApplicationContext(), BankingWidget.class));
                     appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_wiget_ingredients);
                 }
-
-                 //setImageTintList(new ColorStateList());
             }
         };
 
@@ -140,20 +138,12 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
 
             numberIngredients = itemView.findViewById(R.id.subtitle_number_ingredients);
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
+            btnFavoritarLayout = itemView.findViewById(R.id.btn_favoritar);
+            btnFavoritar = itemView.findViewById(R.id.btn_favoritar_img);
+            item = itemView.findViewById(R.id.item_card);
 
-
-            //itemView.setOnClickListener(listener);
-            title.setOnClickListener(listener);
-            numberIngredients.setOnClickListener(listener);
-            numberSteps.setOnClickListener(listener);
-
-            if (isTablet) {
-                btnFavoritar = itemView.findViewById(R.id.btn_favoritar_tablet);
-            } else {
-                btnFavoritar = itemView.findViewById(R.id.btn_favoritar);
-            }
-
-            btnFavoritar.setOnClickListener(listenerFavoritar);
+            item.setOnClickListener(listener);
+            btnFavoritarLayout.setOnClickListener(listenerFavoritar);
 
             context = itemView.getContext();
         }

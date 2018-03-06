@@ -1,9 +1,14 @@
 package com.example.rako.bankingapp.activitys;
 
 import android.content.ContextWrapper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -103,13 +108,6 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_recipe_favorito, menu);
-        return true;
-    }
-
-    @Override
     public void onClickedStep(int position) {
         this.position = position;
         if (isTablet()) {
@@ -140,7 +138,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     public void setFragmentPhone() {
+
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment previousFragment = fragmentManager.findFragmentById(R.id.fragment_list_steps);
 
         FragmentRecipeStepDetail fragmentDetailPhone = null;
         if (position == 0) {
@@ -151,9 +152,32 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                     steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL());
         }
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_list_steps, fragmentDetailPhone, TAGrecipeDetailFragment)
-                .commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // 1. Exit for Previous Fragment
+        Fade exitFade = new Fade();
+        int duration = 50;
+        exitFade.setDuration(duration);
+        previousFragment.setExitTransition(exitFade);
+
+        // 2. Shared Elements Transition
+        TransitionSet enterTransitionSet = new TransitionSet();
+        enterTransitionSet.addTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.move));
+
+        enterTransitionSet.setDuration(duration);
+        enterTransitionSet.setStartDelay(duration);
+            fragmentDetailPhone.setSharedElementEnterTransition(enterTransitionSet);
+
+        // 3. Enter Transition for New Fragment
+        Fade enterFade = new Fade();
+        enterFade.setStartDelay(duration + duration);
+        enterFade.setDuration(duration);
+        fragmentDetailPhone.setEnterTransition(enterFade);
+
+
+        fragmentTransaction.replace(R.id.fragment_list_steps, fragmentDetailPhone);
+        fragmentTransaction.commitAllowingStateLoss();
+
 
         fragmentDetailPhone.setDescription(steps.get(position).getDescription());
         fragmentDetailPhone.setTitulo(steps.get(position).getShortDescription());
