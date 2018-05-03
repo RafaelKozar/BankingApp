@@ -18,8 +18,11 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.containsString;
 
 
 /**
@@ -46,6 +49,10 @@ public class BankingTest {
     public void idlingResourceTest() {
         onView(withId(R.id.recycler_titles))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.list_steps))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+        onView(withId(R.id.titulo_step)).check(matches(withText(containsString("Ingredientes"))));
     }
 
     @After
