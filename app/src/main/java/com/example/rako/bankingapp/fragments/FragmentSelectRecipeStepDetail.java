@@ -193,7 +193,7 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
 
-            setmExoPlayerBackView();
+            mExoPlayer.prepare(mediaSource);
         }
     }
 

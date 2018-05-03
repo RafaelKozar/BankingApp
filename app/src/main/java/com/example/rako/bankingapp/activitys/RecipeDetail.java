@@ -10,6 +10,7 @@ import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -24,15 +25,21 @@ import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
 
+import static com.example.rako.bankingapp.fragments.FragmentRecipeStepDetail.PLAY_PAUSE;
+import static com.example.rako.bankingapp.fragments.FragmentRecipeStepDetail.POSITION;
+
 public class RecipeDetail extends AppCompatActivity implements ListStepsFragment.interfaceClickStep,
         FragmentRecipeStepDetail.InterfacePhone {
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
-    private int position;
+    private int position = -1;
 
     private static final String TAGrecipeDetailFragment = "detailFragment";
     private static final String TAGDetailTabletFragment = "detailTabletFragment";
+    private static final String GETBUNDLE = "getBundle";
 
+    private long pTime;
+    private boolean ready;
 
     public boolean isTablet() {
         DisplayMetrics metrics = new DisplayMetrics();
@@ -41,22 +48,25 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         float yInches= metrics.heightPixels/metrics.ydpi;
         float xInches= metrics.widthPixels/metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-        if (diagonalInches>=6.5){
-            return true;
-        }else{
-            return false;
-        }
+//        if (diagonalInches>=6.5){
+//            return true;
+//        }else{
+//            return false;
+//        }
+        return false;
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("RecipeDetail", "onCreate");
         if (isTablet()) {
             setContentView(R.layout.activity_recipe_detail_tablet);
         } else {
             setContentView(R.layout.activity_recipe_detail);
         }
+
 
         new Prefs.Builder()
                 .setContext(this)
@@ -69,43 +79,45 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
             ingredients = savedInstanceState.getParcelableArrayList("ingredientes");
             steps = savedInstanceState.getParcelableArrayList("steps");
             position = savedInstanceState.getInt("position");
+
+            Bundle bundle = savedInstanceState.getBundle(GETBUNDLE);
+            if (bundle != null) {
+                pTime = bundle.getLong(POSITION, 0);
+                ready = bundle.getBoolean(PLAY_PAUSE, false);
+            }else{ setBund(); }
+
         }else {
             ingredients = getIntent().getParcelableArrayListExtra("ingredients");
             steps = getIntent().getParcelableArrayListExtra("steps");
+            setBund();
         }
 
-        int size = steps.size() - 1;
-        if (steps.get(size).getDescription() == null) {
-            steps.remove(size);
-        }
+        setFragment();
+    }
 
+    public void setBund() {
+        pTime = 0;
+        ready = false;
+    }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentRecipeStepDetail fragmentDetailPhoneRetain = (FragmentRecipeStepDetail) fragmentManager.findFragmentByTag(
-                TAGrecipeDetailFragment
-        );
+    public void setFragment() {
+        if (position == -1) {
 
-        FragmentSelectRecipeStepDetail fragmentSelectDetail = (FragmentSelectRecipeStepDetail) fragmentManager.findFragmentByTag(
-                TAGDetailTabletFragment
-        );
-
-        if (fragmentDetailPhoneRetain == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
             ListStepsFragment listStepsFragment = new ListStepsFragment();
             listStepsFragment.setStepList(steps);
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_list_steps, listStepsFragment)
-                    .commit();
+            fragmentManager.beginTransaction().replace(
+                    R.id.fragment_list_steps,
+                    listStepsFragment
+            ).commit();
 
-            if (isTablet()  &&  fragmentSelectDetail != null) {
-                FragmentSelectRecipeStepDetail fragmentDetailTablet = new FragmentSelectRecipeStepDetail();
-                fragmentManager.beginTransaction()
-                        .add(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
-                        .commit();
+            if (isTablet()) {
+                onClickedStep(0);
             }
-        }
-
+        }else onClickedStep(position);
     }
+
 
     @Override
     public void onClickedStep(int position) {
@@ -118,6 +130,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     public void setFragmentTablet() {
+        Log.e("RecipeDetail", "setFragmentTablet");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentSelectRecipeStepDetail fragmentDetailTablet = null;
         if (position == 0) {
@@ -129,7 +142,8 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                     steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL()
             );
         }
-        fragmentManager.beginTransaction()
+
+                fragmentManager.beginTransaction()
                 .replace(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
                 .commit();
 
@@ -138,7 +152,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     public void setFragmentPhone() {
-
+        Log.e("RecipeDetail", "setFragmentPhone");
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         Fragment previousFragment = fragmentManager.findFragmentById(R.id.fragment_list_steps);
@@ -146,10 +160,12 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         FragmentRecipeStepDetail fragmentDetailPhone = null;
         if (position == 0) {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
-                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(), ingredients);
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
+                    ingredients, pTime, ready);
         } else {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
-                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL());
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
+                    pTime, ready);
         }
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -176,7 +192,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
 
         fragmentTransaction.replace(R.id.fragment_list_steps, fragmentDetailPhone);
-        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commit();
 
 
         fragmentDetailPhone.setDescription(steps.get(position).getDescription());
@@ -186,10 +202,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        Log.e("RecipeDetail", "OnSaveInstanceState");
         outState.putParcelableArrayList("ingredientes", ingredients);
         outState.putParcelableArrayList("steps", steps);
         outState.putInt("position", position);
-
+        outState.putBundle(GETBUNDLE, FragmentRecipeStepDetail.bundle);
         super.onSaveInstanceState(outState);
     }
 

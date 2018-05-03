@@ -5,9 +5,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.constraint.Guideline;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -20,15 +17,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.rako.bankingapp.R;
-import com.example.rako.bankingapp.activitys.RecipeDetail;
 import com.example.rako.bankingapp.adapters.AdapterIngredientes;
-import com.example.rako.bankingapp.adapters.AdapterSteps;
 import com.example.rako.bankingapp.model.Ingredient;
 import com.example.rako.bankingapp.resources.ComponentListenner;
 import com.example.rako.bankingapp.resources.MySessionCallback;
@@ -52,10 +46,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
-import java.sql.Struct;
 import java.util.List;
-
-import static com.google.android.exoplayer2.ExoPlayer.STATE_READY;
 
 /**
  * Created by rako on 29/09/2017.
@@ -68,7 +59,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private String stringDescription;
     private static final String TAG = FragmentRecipeStepDetail.class.getSimpleName();
 
-    private SimpleExoPlayer mExoPlayer;
+    private static SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -77,10 +68,11 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     private boolean isIngredients;
     private List<Ingredient> ingredientList;
 
-    private Long positionTime;
-    private boolean isReady;
-    private static final String POSITION = "positionTime";
-    private static final String PLAY_PAUSE = "getPlayPause";
+    private static Long positionTime;
+    private static boolean isReady;
+    public static final String POSITION = "positionTime";
+    public static final String PLAY_PAUSE = "getPlayPause";
+    private static final String TEM_VIDEO = "temVideo";
 
     private GestureDetector gestureDetector;
     private InterfacePhone listenerSwipe;
@@ -89,6 +81,9 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         void delegateSwipeRight();
         void delegateSwipeLeft();
     }
+
+
+    public static Bundle bundle = null;
 
     @Override
     public void onAttach(Context context) {
@@ -101,21 +96,28 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     }
 
-    public FragmentRecipeStepDetail(String urlVideo, String urlImage) {
+    public FragmentRecipeStepDetail(String urlVideo, String urlImage, long pTime, boolean ready) {
         this.urlVideo = urlVideo;
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
         setTemImg(urlImage);
+        positionTime = pTime;
+        isReady = ready;
+
     }
 
-    public FragmentRecipeStepDetail(String urlVideo, String urlImage, List<Ingredient> ingredients) {
+    public FragmentRecipeStepDetail(String urlVideo, String urlImage, List<Ingredient> ingredients
+            , long pTime, boolean ready) {
         this.urlVideo = urlVideo;
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
         setTemImg(urlImage);
         this.ingredientList = ingredients;
         isIngredients = true;
+        positionTime = pTime;
+        isReady = ready;
     }
+
 
     public void setTemVideo(String urlVideo) {
         if (urlVideo != null && !urlVideo.isEmpty()) {
@@ -135,15 +137,16 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.e("FragmentRecipeStepDetail", "OnCreateView");
         View view = inflater.inflate(R.layout.fragment_step_detail_view, container, false);
-        setRetainInstance(true);
+
         mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.player_view);
         FrameLayout frameLayout = view.findViewById(R.id.frame_no_video);
-        ImageView thumbnail = view.findViewById(R.id.thumbnailIMG_phone);
+        ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
 
         if (temVideo) {
-            initilizeMediaSession();
-            initializePlayer(Uri.parse(urlVideo));
+//            initilizeMediaSession();
+//            initializePlayer(Uri.parse(urlVideo));
             frameLayout.setVisibility(View.GONE);
+//            setmExoPlayerBackView();
         } else {
             mPlayerView.setVisibility(View.GONE);
             if (temImg) {
@@ -240,16 +243,27 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         super.onResume();
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        Log.e("FragmentRecipeStepDetail", "onViewStateRestored");
-        if (savedInstanceState != null) {
-            positionTime = savedInstanceState.getLong(POSITION, 0);
-            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
-            setmExoPlayerBackView();
+//    @Override
+//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+//        Log.e("FragmentRecipeStepDetail", "onViewStateRestored");
+//        if (savedInstanceState != null) {
+//            positionTime = savedInstanceState.getLong(POSITION, 0);
+//            isReady = savedInstanceState.getBoolean(PLAY_PAUSE, false);
+//            temVideo = savedInstanceState.getBoolean(TEM_VIDEO, false);
+//        }
+//        super.onViewStateRestored(savedInstanceState);
+//    }
+
+    public static void setState() {
+        bundle = new Bundle();
+        if (mExoPlayer != null) {
+            positionTime = mExoPlayer.getCurrentPosition();
+            isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
+            bundle.putLong(POSITION, positionTime);
+            bundle.putBoolean(PLAY_PAUSE, isReady);
         }
-        super.onViewStateRestored(savedInstanceState);
     }
+
 
     private void initializePlayer(Uri mediaUri) {
         if (mExoPlayer == null) {
@@ -279,6 +293,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
     }
 
     public void setmExoPlayerBackView() {
+        Log.e("FragmentRecipeStepDetail", "setmExoPlayerBackView");
         if (temVideo) {
             initilizeMediaSession();
             initializePlayer(Uri.parse(urlVideo));
@@ -307,8 +322,11 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         if (mExoPlayer != null) {
             positionTime = mExoPlayer.getCurrentPosition();
             isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
-            onSaveInstanceState(new Bundle());
+            setState();
+            //myOnSaveInstanceState(new Bundle());
             releasePlayer();
+        }else{
+            setState();
         }
         super.onPause();
     }
@@ -319,12 +337,12 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         super.onStop();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putLong(POSITION, positionTime);
-        outState.putBoolean(PLAY_PAUSE, isReady);
-        super.onSaveInstanceState(outState);
-    }
+
+//    public void myOnSaveInstanceState(Bundle outState) {
+//        outState.putLong(POSITION, positionTime);
+//        outState.putBoolean(PLAY_PAUSE, isReady);
+//        outState.putBoolean(TEM_VIDEO, temVideo);
+//    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

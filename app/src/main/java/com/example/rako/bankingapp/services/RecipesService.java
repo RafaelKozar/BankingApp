@@ -1,6 +1,7 @@
 package com.example.rako.bankingapp.services;
 
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.support.annotation.Nullable;
@@ -49,6 +50,7 @@ public class RecipesService implements LoaderManager.LoaderCallbacks<List<Recipe
         loaderManager.initLoader(LOADER_MOVIES_RECIPES, bundle, this);
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public Loader<List<Recipe>> onCreateLoader(int i, final Bundle bundle) {
         return new AsyncTaskLoader<List<Recipe>>(context) {

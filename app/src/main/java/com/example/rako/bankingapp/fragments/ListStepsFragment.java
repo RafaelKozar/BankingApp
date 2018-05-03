@@ -52,7 +52,7 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
 
     public void setStepList(List<Step> stepList) {
         this.stepList = stepList;
-        this.stepList.add(new Step());
+//        this.stepList.add(new Step());
     }
 
     @Override

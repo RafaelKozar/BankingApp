@@ -1,5 +1,6 @@
 package com.example.rako.bankingapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -64,6 +65,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             view = inflater.inflate(R.layout.item_view, parent, false);
         }
 
+
         return new AdapterRecipeViewHolder(view);
     }
 
@@ -115,6 +117,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         };
 
         View.OnClickListener listenerFavoritar = new View.OnClickListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
                 if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0)
