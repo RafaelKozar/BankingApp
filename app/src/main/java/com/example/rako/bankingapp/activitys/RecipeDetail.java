@@ -48,12 +48,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         float yInches= metrics.heightPixels/metrics.ydpi;
         float xInches= metrics.widthPixels/metrics.xdpi;
         double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-//        if (diagonalInches>=6.5){
-//            return true;
-//        }else{
-//            return false;
-//        }
-        return false;
+        if (diagonalInches>=6.5){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
@@ -101,7 +100,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     }
 
     public void setFragment() {
-        if (position == -1) {
+        if (position == -1 || isTablet()) {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             ListStepsFragment listStepsFragment = new ListStepsFragment();
@@ -113,11 +112,10 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
             ).commit();
 
             if (isTablet()) {
-                onClickedStep(0);
+                onClickedStep(position);
             }
         }else onClickedStep(position);
     }
-
 
     @Override
     public void onClickedStep(int position) {
@@ -133,13 +131,16 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         Log.e("RecipeDetail", "setFragmentTablet");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentSelectRecipeStepDetail fragmentDetailTablet = null;
+        if(position == -1)position = 0;
         if (position == 0) {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
-                    steps.get(position).getVideoURL(), ingredients, steps.get(position).getThumbnailURL()
+                    steps.get(position).getVideoURL(), ingredients,
+                    steps.get(position).getThumbnailURL(), pTime, ready
             );
         } else {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
-                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL()
+                    steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
+                    pTime, ready
             );
         }
 
@@ -206,7 +207,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         outState.putParcelableArrayList("ingredientes", ingredients);
         outState.putParcelableArrayList("steps", steps);
         outState.putInt("position", position);
-        outState.putBundle(GETBUNDLE, FragmentRecipeStepDetail.bundle);
+        if (isTablet()) {
+            outState.putBundle(GETBUNDLE, FragmentSelectRecipeStepDetail.bundle);
+        }else{
+            outState.putBundle(GETBUNDLE, FragmentRecipeStepDetail.bundle);
+        }
         super.onSaveInstanceState(outState);
     }
 

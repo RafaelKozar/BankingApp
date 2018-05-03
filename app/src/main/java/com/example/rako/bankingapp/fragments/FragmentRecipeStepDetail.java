@@ -325,8 +325,6 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             setState();
             //myOnSaveInstanceState(new Bundle());
             releasePlayer();
-        }else{
-            setState();
         }
         super.onPause();
     }
