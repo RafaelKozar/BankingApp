@@ -51,7 +51,8 @@ public class FeedRecipes {
                 recipes.add(
                         new Recipe(jsonObject.getString("name"),
                                 ingredients,
-                                steps
+                                steps,
+                                jsonObject.getString("image")
                         ));
             }
             return recipes;

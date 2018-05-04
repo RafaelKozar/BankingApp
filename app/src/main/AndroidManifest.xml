@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activitys.RecipeDetail" />
+        <activity android:name=".activitys.RecipeDetail"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <receiver android:name=".widget.BankingWidget">
             <intent-filter>

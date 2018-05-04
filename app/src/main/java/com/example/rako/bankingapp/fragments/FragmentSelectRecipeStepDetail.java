@@ -65,6 +65,7 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
     private String urlVideo;
     private String stringTitulo;
     private String urlImg;
+    private String urlImg2;
     private String stringDescription;
 
     private static Long positionTime;
@@ -74,7 +75,8 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
     private static final String POSITION = "positionTime";
     private static final String PLAY_PAUSE = "getPlayPause";
 
-    public FragmentSelectRecipeStepDetail(String urlVideo, String urlImg, long pTime, boolean ready) {
+    public FragmentSelectRecipeStepDetail(String urlVideo, String urlImg, long pTime, boolean ready,
+                                          String urlImg2) {
         Log.i(TAG, "URLVideo " + urlVideo);
         this.urlVideo = urlVideo;
         isIngredients = false;
@@ -83,10 +85,11 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         setTemImg(urlImg);
         positionTime = pTime;
         isReady = ready;
+        this.urlImg2 = urlImg2;
     }
 
     public FragmentSelectRecipeStepDetail(String urlVideo, List<Ingredient> ingredients,
-                                          String urlImg, long pTime, boolean ready) {
+                                          String urlImg, long pTime, boolean ready, String urlImg2) {
         Log.i(TAG, "URLVideo " + urlVideo);
         this.urlVideo = urlVideo;
         this.ingredientList = ingredients;
@@ -96,6 +99,7 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         setTemImg(urlImg);
         positionTime = pTime;
         isReady = ready;
+        this.urlImg2 = urlImg2;
     }
 
     public FragmentSelectRecipeStepDetail() {
@@ -120,13 +124,10 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
             ImageView thumbnail = view.findViewById(R.id.thumbnailIMG);
 
             if (temImg) {
-                ImageView imageView = view.findViewById(R.id.thumbnailIMG);
-                Picasso.with(getContext())
-                        .load(urlImg)
-                        .into(imageView);
-                thumbnail.setVisibility(View.VISIBLE);
-                frameLayout.setVisibility(View.GONE);
-            } else {
+                setImage(urlImg, view);
+            } else if (urlImg2 != null && !urlImg2.contains("")) {
+                setImage(urlImg2, view);
+            }else{
                 thumbnail.setVisibility(View.GONE);
                 frameLayout.setVisibility(View.VISIBLE);
             }
@@ -173,6 +174,14 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         return view;
     }
 
+    private void setImage(String image, View view) {
+        ImageView imageView = view.findViewById(R.id.thumbnailIMG);
+        Picasso.with(getContext())
+                .load(image)
+                .into(imageView);
+        view.findViewById(R.id.thumbnailIMG).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.frame_no_video).setVisibility(View.GONE);
+    }
 
     private void initilizeMediaSession() {
         // Create a MediaSessionCompat.
@@ -248,13 +257,6 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
         super.onPause();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putLong(POSITION, positionTime);
-        outState.putBoolean(PLAY_PAUSE, isReady);
-        super.onSaveInstanceState(outState);
-    }
-
     public void setTitulo(String stringTitulo) {
         this.stringTitulo = stringTitulo;
     }
@@ -278,6 +280,21 @@ public class FragmentSelectRecipeStepDetail extends Fragment {
                 mExoPlayer.setPlayWhenReady(false);
             }
         }
+    }
+
+    /*********** onSaveInstante  ***********/
+    /** I implemented onSavenInstante on rotation in parent activity */
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.e("FragmentRecipeStepDetail", "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Log.e("FragmentRecipeStepDetail", "onSaveInstanceState");
+        super.onViewStateRestored(savedInstanceState);
     }
 
     @Override

@@ -16,19 +16,22 @@ public class Recipe implements Parcelable{
     private List<Step> stepList;
     private int numberSteps;
     private int numberIngredients;
+    private String imageUrl;
 
-    public Recipe(String name, List<Ingredient> ingredients, List<Step> steps) {
+    public Recipe(String name, List<Ingredient> ingredients, List<Step> steps, String imageUrl) {
         this.name = name;
         this.ingredientList = ingredients;
         this.stepList = steps;
         this.numberSteps = steps.size();
         this.numberIngredients = ingredients.size();
+        this.setImageUrl(imageUrl);
     }
 
     protected Recipe(Parcel in) {
         name = in.readString();
         numberSteps = in.readInt();
         numberIngredients = in.readInt();
+        setImageUrl(in.readString());
 
         this.ingredientList = new ArrayList<Ingredient>();
         in.readList(this.ingredientList, Ingredient.class.getClassLoader());
@@ -98,7 +101,16 @@ public class Recipe implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
+        parcel.writeString(getImageUrl());
         parcel.writeInt(numberSteps);
         parcel.writeInt(numberIngredients);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

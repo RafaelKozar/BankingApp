@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements AdapterRecipes.Cl
                 (ArrayList<? extends Parcelable>) recipeList.get(position).getStepList());
         it.putParcelableArrayListExtra("ingredients",
                 (ArrayList<? extends Parcelable>) recipeList.get(position).getIngredientList());
+        it.putExtra("imageRecipe", recipeList.get(position).getImageUrl());
         startActivity(it);
     }
 

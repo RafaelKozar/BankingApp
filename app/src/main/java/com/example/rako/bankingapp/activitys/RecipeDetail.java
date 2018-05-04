@@ -1,11 +1,13 @@
 package com.example.rako.bankingapp.activitys;
 
+import android.annotation.SuppressLint;
 import android.content.ContextWrapper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
@@ -32,30 +34,32 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         FragmentRecipeStepDetail.InterfacePhone {
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
+    private String imageRecipe;
     private int position = -1;
 
     private static final String TAGrecipeDetailFragment = "detailFragment";
     private static final String TAGDetailTabletFragment = "detailTabletFragment";
     private static final String GETBUNDLE = "getBundle";
 
-    private long pTime;
-    private boolean ready;
+    private long pTime = 0;
+    private boolean ready = false;
 
     public boolean isTablet() {
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        float yInches= metrics.heightPixels/metrics.ydpi;
-        float xInches= metrics.widthPixels/metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches*xInches + yInches*yInches);
-        if (diagonalInches>=6.5){
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+        if (diagonalInches >= 6.5) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,12 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
             setContentView(R.layout.activity_recipe_detail);
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(R.color.primary);
+
+
+
 
         new Prefs.Builder()
                 .setContext(this)
@@ -73,6 +83,15 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                 .setPrefsName(this.getPackageName())
                 .setUseDefaultSharedPreference(true)
                 .build();
+
+        ingredients = getIntent().getParcelableArrayListExtra("ingredients");
+        steps = getIntent().getParcelableArrayListExtra("steps");
+        imageRecipe = getIntent().getStringExtra("imageRecipe");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.e("RecipeDetail", "onRestoreInstanceState");
 
         if (savedInstanceState != null) {
             ingredients = savedInstanceState.getParcelableArrayList("ingredientes");
@@ -83,21 +102,23 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
             if (bundle != null) {
                 pTime = bundle.getLong(POSITION, 0);
                 ready = bundle.getBoolean(PLAY_PAUSE, false);
-            }else{ setBund(); }
-
-        }else {
-            ingredients = getIntent().getParcelableArrayListExtra("ingredients");
-            steps = getIntent().getParcelableArrayListExtra("steps");
-            setBund();
+            }
         }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
+//    public void setBund() {
+//        pTime = 0;
+//        ready = false;
+//    }
+
+    @Override
+    protected void onResume() {
+        Log.e("RecipeDetail", "OnResume");
         setFragment();
+        super.onResume();
     }
 
-    public void setBund() {
-        pTime = 0;
-        ready = false;
-    }
 
     public void setFragment() {
         if (position == -1 || isTablet()) {
@@ -114,7 +135,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
             if (isTablet()) {
                 onClickedStep(position);
             }
-        }else onClickedStep(position);
+        } else onClickedStep(position);
     }
 
     @Override
@@ -131,20 +152,20 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         Log.e("RecipeDetail", "setFragmentTablet");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentSelectRecipeStepDetail fragmentDetailTablet = null;
-        if(position == -1)position = 0;
+        if (position == -1) position = 0;
         if (position == 0) {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
                     steps.get(position).getVideoURL(), ingredients,
-                    steps.get(position).getThumbnailURL(), pTime, ready
+                    steps.get(position).getThumbnailURL(), pTime, ready, imageRecipe
             );
         } else {
             fragmentDetailTablet = new FragmentSelectRecipeStepDetail(
                     steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
-                    pTime, ready
+                    pTime, ready, imageRecipe
             );
         }
 
-                fragmentManager.beginTransaction()
+        fragmentManager.beginTransaction()
                 .replace(R.id.fragment_detail_step, fragmentDetailTablet, TAGDetailTabletFragment)
                 .commit();
 
@@ -162,11 +183,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         if (position == 0) {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
                     steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
-                    ingredients, pTime, ready);
+                    ingredients, pTime, ready, imageRecipe);
         } else {
             fragmentDetailPhone = new FragmentRecipeStepDetail(
                     steps.get(position).getVideoURL(), steps.get(position).getThumbnailURL(),
-                    pTime, ready);
+                    pTime, ready, imageRecipe);
         }
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -183,7 +204,7 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
         enterTransitionSet.setDuration(duration);
         enterTransitionSet.setStartDelay(duration);
-            fragmentDetailPhone.setSharedElementEnterTransition(enterTransitionSet);
+        fragmentDetailPhone.setSharedElementEnterTransition(enterTransitionSet);
 
         // 3. Enter Transition for New Fragment
         Fade enterFade = new Fade();
@@ -209,14 +230,23 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         outState.putInt("position", position);
         if (isTablet()) {
             outState.putBundle(GETBUNDLE, FragmentSelectRecipeStepDetail.bundle);
-        }else{
+            //no caso quando minimizo a tela e depois volto para ela a função onRestoreInstanceState
+            //não é chamado, pois os valores continuam em memória, por que seto eles aqui
+            pTime = FragmentSelectRecipeStepDetail.bundle.getLong(POSITION, 0);
+            ready = FragmentSelectRecipeStepDetail.bundle.getBoolean(PLAY_PAUSE, false);
+
+        } else {
             outState.putBundle(GETBUNDLE, FragmentRecipeStepDetail.bundle);
+            if (FragmentRecipeStepDetail.bundle != null) {
+                pTime = FragmentRecipeStepDetail.bundle.getLong(POSITION, 0);
+                ready = FragmentRecipeStepDetail.bundle.getBoolean(PLAY_PAUSE, false);
+            }
         }
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void delegateSwipeRight() {
+    public void delegateSwipeRight()    {
         if (position < (steps.size() - 1)) {
             this.position++;
             setFragmentPhone();

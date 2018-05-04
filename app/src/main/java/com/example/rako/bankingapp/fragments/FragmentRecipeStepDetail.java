@@ -54,6 +54,7 @@ import java.util.List;
 
 public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchListener{
     private String urlVideo;
+    private String urlImage2;
     private String urlImage;
     private String stringTitulo;
     private String stringDescription;
@@ -96,18 +97,19 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
     }
 
-    public FragmentRecipeStepDetail(String urlVideo, String urlImage, long pTime, boolean ready) {
+    public FragmentRecipeStepDetail(String urlVideo, String urlImage, long pTime, boolean ready,
+                                    String urlVideo2) {
         this.urlVideo = urlVideo;
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
         setTemImg(urlImage);
         positionTime = pTime;
         isReady = ready;
-
+        this.urlImage2 = urlVideo2;
     }
 
     public FragmentRecipeStepDetail(String urlVideo, String urlImage, List<Ingredient> ingredients
-            , long pTime, boolean ready) {
+            , long pTime, boolean ready, String urlVideo2) {
         this.urlVideo = urlVideo;
         this.urlImage = urlImage;
         setTemVideo(urlVideo);
@@ -116,6 +118,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         isIngredients = true;
         positionTime = pTime;
         isReady = ready;
+        this.urlImage2 = urlVideo2;
     }
 
 
@@ -150,11 +153,9 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         } else {
             mPlayerView.setVisibility(View.GONE);
             if (temImg) {
-                Picasso.with(getContext())
-                        .load(urlImage)
-                        .into(thumbnail);
-                thumbnail.setVisibility(View.VISIBLE);
-                frameLayout.setVisibility(View.INVISIBLE);
+                setImage(urlImage, view);
+            } else if (urlImage2 != null && !urlImage2.contains("")) {
+                setImage(urlImage2, view);
             } else {
                 frameLayout.setVisibility(View.VISIBLE);
                 thumbnail.setVisibility(View.GONE);
@@ -194,6 +195,15 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             view.setOnTouchListener(this);
         }
         return view;
+    }
+
+    private void setImage(String image, View view) {
+        ImageView imageView = view.findViewById(R.id.thumbnailIMG);
+        Picasso.with(getContext())
+                .load(image)
+                .into(imageView);
+        view.findViewById(R.id.thumbnailIMG).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.frame_no_video).setVisibility(View.GONE);
     }
 
     public void setDescription(String descriptionString) {
@@ -323,7 +333,7 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
             positionTime = mExoPlayer.getCurrentPosition();
             isReady = mExoPlayer.getPlayWhenReady() && mExoPlayer.getPlaybackState() == 3;
             setState();
-            //myOnSaveInstanceState(new Bundle());
+
             releasePlayer();
         }
         super.onPause();
@@ -335,6 +345,8 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
         super.onStop();
     }
 
+    /*********** onSaveInstante  ***********/
+    /** I implemented onSaveInstante on rotation in parent activity */
 
 //    public void myOnSaveInstanceState(Bundle outState) {
 //        outState.putLong(POSITION, positionTime);

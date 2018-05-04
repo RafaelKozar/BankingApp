@@ -4,13 +4,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.rako.bankingapp.R;
+import com.example.rako.bankingapp.activitys.RecipeDetail;
 import com.example.rako.bankingapp.adapters.AdapterSteps;
 import com.example.rako.bankingapp.model.Step;
 
@@ -69,4 +74,21 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
     public interface interfaceClickStep {
         void onClickedStep(int position);
     }
+
+    public boolean isTablet() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+        if (diagonalInches >= 6.5) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
 }

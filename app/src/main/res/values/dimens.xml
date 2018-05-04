@@ -2,7 +2,7 @@
 <resources>
     <dimen name="margin_celula">6dp</dimen>
     <dimen name="margin_widget">2dp</dimen>
-    <dimen name="margin_text_description">12dp</dimen>
+    <dimen name="margin_text_description">8dp</dimen>
     <dimen name="padding_celula">6dp</dimen>
     <dimen name="margin_layout">16dp</dimen>
     <dimen name="tam_titulo_list">16sp</dimen>

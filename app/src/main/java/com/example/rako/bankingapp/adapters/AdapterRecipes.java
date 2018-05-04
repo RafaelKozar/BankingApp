@@ -20,6 +20,7 @@ import com.example.rako.bankingapp.R;
 import com.example.rako.bankingapp.model.Recipe;
 import com.example.rako.bankingapp.widget.BankingWidget;
 import com.pixplicity.easyprefs.library.Prefs;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +70,22 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         return new AdapterRecipeViewHolder(view);
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public void onBindViewHolder(AdapterRecipes.AdapterRecipeViewHolder holder, int position) {
         holder.title.setText(recipes.get(position).getName());
         holder.numberIngredients.setText(holder.context.getString(R.string.texto_quantidade_ingredientes, String.valueOf(recipes.get(position).getNumberIngredients())));
         holder.numberSteps.setText(holder.context.getString(R.string.texto_quantidade_pasos, String.valueOf(recipes.get(position).getNumberSteps())));
+        if (recipes.get(position).getImageUrl() != null &&
+                !recipes.get(position).getImageUrl().contains("")) {
+            holder.imageRecipe.setVisibility(View.VISIBLE);
 
+            Picasso.with(holder.context)
+                    .load(recipes.get(position).getImageUrl())
+                    .into(holder.imageRecipe);
+        }else{
+            holder.imageRecipe.setVisibility(View.GONE);
+        }
         if (Prefs.getLong(ctx.getString(R.string.key_preference_bank), 0) == position) {
             holder.btnFavoritar.setColorFilter(Color.parseColor(ctx.getString(R.color.colorPrimary)));
         }else{
@@ -104,6 +115,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
         TextView numberSteps;
         Context context;
         ImageView btnFavoritar;
+        ImageView imageRecipe;
         LinearLayout btnFavoritarLayout;
         LinearLayout item;
 
@@ -143,6 +155,7 @@ public class AdapterRecipes extends RecyclerView.Adapter<AdapterRecipes.AdapterR
             numberSteps = itemView.findViewById(R.id.subtitle_number_stepes);
             btnFavoritarLayout = itemView.findViewById(R.id.btn_favoritar);
             btnFavoritar = itemView.findViewById(R.id.btn_favoritar_img);
+            imageRecipe = itemView.findViewById(R.id.imageRecipe);
             item = itemView.findViewById(R.id.item_card);
 
             item.setOnClickListener(listener);
