@@ -22,8 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activitys.RecipeDetail"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".activitys.RecipeDetail"
+            android:theme="@style/appRecipeTheme"
+            android:parentActivityName=".activitys.MainActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activitys.MainActivity" />
+        </activity>
 
         <receiver android:name=".widget.BankingWidget">
             <intent-filter>

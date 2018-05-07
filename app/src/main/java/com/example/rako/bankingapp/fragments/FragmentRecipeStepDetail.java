@@ -194,6 +194,8 @@ public class FragmentRecipeStepDetail extends Fragment implements View.OnTouchLi
 
             view.setOnTouchListener(this);
         }
+
+
         return view;
     }
 

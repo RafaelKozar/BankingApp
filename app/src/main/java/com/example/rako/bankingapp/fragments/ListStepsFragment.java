@@ -51,10 +51,6 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
         return rootView;
     }
 
-    public List<Step> getStepList() {
-        return stepList;
-    }
-
     public void setStepList(List<Step> stepList) {
         this.stepList = stepList;
 //        this.stepList.add(new Step());
@@ -74,21 +70,5 @@ public class ListStepsFragment extends Fragment implements AdapterSteps.ClickSte
     public interface interfaceClickStep {
         void onClickedStep(int position);
     }
-
-    public boolean isTablet() {
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        float yInches = metrics.heightPixels / metrics.ydpi;
-        float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-        if (diagonalInches >= 6.5) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
 
 }

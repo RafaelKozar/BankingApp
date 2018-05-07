@@ -2,9 +2,12 @@ package com.example.rako.bankingapp.activitys;
 
 import android.annotation.SuppressLint;
 import android.content.ContextWrapper;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +18,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.animation.AccelerateInterpolator;
 
 
 import com.example.rako.bankingapp.R;
@@ -44,6 +49,9 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
     private long pTime = 0;
     private boolean ready = false;
 
+    private Toolbar toolbar;
+
+
     public boolean isTablet() {
         DisplayMetrics metrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -69,13 +77,9 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
         } else {
             setContentView(R.layout.activity_recipe_detail);
         }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(R.color.primary);
-
-
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         new Prefs.Builder()
                 .setContext(this)
@@ -136,6 +140,22 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
                 onClickedStep(position);
             }
         } else onClickedStep(position);
+    }
+
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        onBackPressed();
+//        return true;
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -219,6 +239,11 @@ public class RecipeDetail extends AppCompatActivity implements ListStepsFragment
 
         fragmentDetailPhone.setDescription(steps.get(position).getDescription());
         fragmentDetailPhone.setTitulo(steps.get(position).getShortDescription());
+
+        int orientation = this.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getSupportActionBar().hide();
+        }
 
     }
 
